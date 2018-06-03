@@ -1,0 +1,12 @@
+funkcje:
+-liczenie kalorii
+-na podstawie heartrate rodzaj treningu
+-ranking
+-średnia ilość snu na dany okres
+-dla każdego człowieka top rezulataty dla danego sportu plus total time, spalone kalorie, dystans
+-wyniki sportowe na dopingu 
+
+triggery:
+-w heart rate start_time < end_time
+-w sleep start_time < end_time
+-

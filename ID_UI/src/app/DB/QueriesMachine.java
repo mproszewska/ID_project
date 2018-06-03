@@ -1,7 +1,7 @@
-package Database;
+package app.DB;
 
-import Classes.Activity;
-import Classes.User;
+import app.Model.Activity;
+import app.Model.User;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

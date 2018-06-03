@@ -1,7 +1,6 @@
-package Classes;
+package app.Model;
 
-import Database.PostgreSQLJDBC;
-import Database.QueriesMachine;
+import app.DB.QueriesMachine;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
