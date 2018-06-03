@@ -1,10 +1,22 @@
 --CREATE SCHEMA id_project;
+DROP TABLE IF EXISTS users CASCADE;
+CREATE TABLE users ( 
+	user_id              serial,
+	name                 varchar(100)  NOT NULL,
+	surname              varchar(100)  NOT NULL,
+	sex                  char(1)  NOT NULL,
+	birthday             date  NOT NULL,
+	CONSTRAINT pk_users_users_id PRIMARY KEY ( user_id )
+ );
 
-DROP TABLE IF EXISTS accidents CASCADE;
-CREATE TABLE accidents ( 
-	accident_id          serial,
-	"date"               timestamp DEFAULT current_timestamp NOT NULL,
-	CONSTRAINT pk_accidents_accident_id PRIMARY KEY ( accident_id )
+ALTER TABLE users ADD CONSTRAINT cns_users CHECK ( birthday <= current_date and (sex is null or sex='k' or sex='m'));
+
+DROP TABLE IF EXISTS sleep CASCADE;
+CREATE TABLE  sleep (
+	user_id              integer  NOT NULL,
+	start_time           timestamp  NOT NULL,
+	end_time             timestamp  NOT NULL,
+	CONSTRAINT fk_sleep FOREIGN KEY ( user_id ) REFERENCES users( user_id )  ON DELETE cascade
  );
 
 ALTER TABLE sleep ADD CONSTRAINT cns_sleep_0 CHECK ( start_time < end_time );
@@ -25,23 +37,10 @@ CREATE TABLE medications (
 	medication_id        serial,
 	name                 varchar(100)  NOT NULL,
 	ddd                  numeric  ,
-	CONSTRAINT pk_medications_medication_id PRIMARY KEY ( medication_id ),
-	CONSTRAINT uq_medications_name_0 UNIQUE ( name ) 
+	CONSTRAINT pk_medications_medication_id PRIMARY KEY ( medication_id )
  );
 
 ALTER TABLE medications ADD CONSTRAINT cns_medications CHECK ( ddd is null or ddd > 0 );
-
-DROP TABLE IF EXISTS users CASCADE;
-CREATE TABLE users ( 
-	user_id              serial,
-	name                 varchar(100)  NOT NULL,
-	surname              varchar(100)  NOT NULL,
-	sex                  char(1)  NOT NULL,
-	birthday             date  NOT NULL,
-	CONSTRAINT pk_users_users_id PRIMARY KEY ( user_id )
- );
-
-ALTER TABLE users ADD CONSTRAINT cns_users CHECK ( birthday <= current_date and (sex is null or sex='k' or sex='m'));
 
 DROP TABLE IF EXISTS heartrates CASCADE;
 CREATE TABLE heartrates ( 
@@ -74,6 +73,13 @@ ALTER TABLE height_weight ADD CONSTRAINT cns_height_weight CHECK ( "date" <= cur
 ALTER TABLE height_weight ADD CONSTRAINT cns_height_weight_0 CHECK ( (height is not null or weight is not null) and (weight is not null or weight > 0) and  ( height is null or height > 0));
 
 CREATE INDEX idx_height_weight_user_id ON height_weight ( user_id );
+
+DROP TABLE IF EXISTS accidents CASCADE;
+CREATE TABLE accidents ( 
+	accident_id          serial,
+	"date"               timestamp DEFAULT current_timestamp NOT NULL,
+	CONSTRAINT pk_accidents_accident_id PRIMARY KEY ( accident_id )
+ );
 
 DROP TABLE IF EXISTS injuries CASCADE;
 CREATE TABLE injuries ( 
@@ -171,7 +177,7 @@ CREATE TABLE user_section (
 	start_time           date DEFAULT current_date NOT NULL,
 	end_time             date  ,
 	CONSTRAINT fk_people_users FOREIGN KEY ( user_id ) REFERENCES users( user_id ) ON DELETE cascade,
-	CONSTRAINT fk_people_sections FOREIGN KEY ( section_id ) REFERENCES sections( section_id )
+	CONSTRAINT fk_people_sections FOREIGN KEY ( section_id ) REFERENCES sections( section_id ) ON DELETE cascade
  );
 
 CREATE INDEX idx_people_user_id ON user_section ( user_id );
@@ -189,15 +195,7 @@ CREATE TABLE user_session (
 	start_time           timestamp  NOT NULL,
 	end_time             timestamp  NOT NULL,
 	CONSTRAINT fk_trainings_users FOREIGN KEY ( user_id ) REFERENCES users( user_id )  ON DELETE cascade,
-	CONSTRAINT fk_trainings_sessions FOREIGN KEY ( session_id ) REFERENCES sessions( session_id )  
- );
-
-DROP TABLE IF EXISTS sleep CASCADE;
-CREATE TABLE sleep (
-	user_id              integer  NOT NULL,
-	start_time           timestamp  NOT NULL,
-	end_time             timestamp  NOT NULL,
-	CONSTRAINT fk_sleep FOREIGN KEY ( user_id ) REFERENCES users( user_id )  ON DELETE cascade
+	CONSTRAINT fk_trainings_sessions FOREIGN KEY ( session_id ) REFERENCES sessions( session_id )  ON DELETE cascade
  );
 
 ALTER TABLE user_session ADD CONSTRAINT cns_user_session CHECK ( start_time<end_time );
@@ -210,5 +208,3 @@ CREATE INDEX idx_user_session_session1_id ON user_session ( session_id );
 
 CREATE TRIGGER user_session_trigger BEFORE INSERT OR UPDATE ON user_session
 FOR EACH ROW EXECUTE PROCEDURE user_session_check();
-
-
