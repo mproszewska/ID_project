@@ -30,6 +30,11 @@ public class QueriesMachine {
         return database.select("SELECT * FROM users", User.class);
     }
 
+    public List<User> getUser(String name, String surname){
+        String in = "SELECT * FROM users WHERE name LIKE '" + name + "' and surname like '" + surname + "'";
+        return database.select(in, User.class);
+    }
+
     public void addUser(User user){
         database.insert("users", user);
     }

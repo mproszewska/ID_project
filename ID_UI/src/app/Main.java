@@ -12,6 +12,9 @@ import java.io.IOException;
 
 public class Main extends Application {
 
+    static String userName;
+    static String userSurname;
+
     @Override
     public void start(Stage primaryStage) throws Exception{
         Parent root = FXMLLoader.load(getClass().getResource("View/Main.fxml"));
@@ -22,6 +25,26 @@ public class Main extends Application {
         primaryStage.show();
     }
 
+    public static void changeName(String in) {
+        userName = in;
+    }
+
+    public static String getUserName() {
+        return userName;
+    }
+
+    public static void changeSurname(String in) {
+        userSurname = in;
+    }
+
+    public static String getUserSurname() {
+        return userSurname;
+    }
+
+    public static void clearData() {
+        userName = "";
+        userSurname = "";
+    }
 
     public static void main(String[] args) {
         launch(args);

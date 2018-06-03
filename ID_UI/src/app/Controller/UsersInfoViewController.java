@@ -1,8 +1,8 @@
 package app.Controller;
 
-import app.Model.Activity;
-import app.Main;
 import app.DB.QueriesMachine;
+import app.Main;
+import app.Model.User;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -14,9 +14,9 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 /**
- * Created by piotrhelm on 01.06.18.
+ * Created by piotrhelm on 03.06.18.
  */
-public class ActivitiesViewController implements Initializable {
+public class UsersInfoViewController implements Initializable {
     @FXML
     private TextFlow textFlow;
 
@@ -28,10 +28,10 @@ public class ActivitiesViewController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         QueriesMachine qMachine = new QueriesMachine();
-        java.util.List<Activity> activities = qMachine.getActivities();
+        java.util.List<User> users = qMachine.getUsers();
         String sb = "";
-        for(Activity i : activities){
-            sb = sb + i.toString() + "\n";
+        for(User u : users){
+            sb = sb + u.toString() + "\n";
         }
         Text text = new Text(sb);
         textFlow.getChildren().add(text);

@@ -7,14 +7,6 @@ CREATE TABLE accidents (
 	CONSTRAINT pk_accidents_accident_id PRIMARY KEY ( accident_id )
  );
 
-DROP TABLE IF EXISTS sleep CASCADE;
-CREATE TABLE sleep (
-	user_id              integer  NOT NULL,
-	start_time           timestamp  NOT NULL,
-	end_time             timestamp  NOT NULL,
-	CONSTRAINT fk_sleep FOREIGN KEY ( user_id ) REFERENCES users( user_id )  ON DELETE cascade
- );
-
 ALTER TABLE sleep ADD CONSTRAINT cns_sleep_0 CHECK ( start_time < end_time );
 
 CREATE TRIGGER sleep_trigger BEFORE INSERT OR UPDATE ON sleep
@@ -198,6 +190,14 @@ CREATE TABLE user_session (
 	end_time             timestamp  NOT NULL,
 	CONSTRAINT fk_trainings_users FOREIGN KEY ( user_id ) REFERENCES users( user_id )  ON DELETE cascade,
 	CONSTRAINT fk_trainings_sessions FOREIGN KEY ( session_id ) REFERENCES sessions( session_id )  
+ );
+
+DROP TABLE IF EXISTS sleep CASCADE;
+CREATE TABLE sleep (
+	user_id              integer  NOT NULL,
+	start_time           timestamp  NOT NULL,
+	end_time             timestamp  NOT NULL,
+	CONSTRAINT fk_sleep FOREIGN KEY ( user_id ) REFERENCES users( user_id )  ON DELETE cascade
  );
 
 ALTER TABLE user_session ADD CONSTRAINT cns_user_session CHECK ( start_time<end_time );

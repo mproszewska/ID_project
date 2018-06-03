@@ -13,8 +13,6 @@ public class User implements QueriesMachine.Selectable, QueriesMachine.Insertabl
     private Integer userId;
     private String name;
     private String surname;
-    private Double height;
-    private Double weight;
     private String sex;
     private Date birthday;
 
@@ -31,11 +29,6 @@ public class User implements QueriesMachine.Selectable, QueriesMachine.Insertabl
         catch (ParseException p){
             throw new RuntimeException("unparsable :(((");
         }
-        return this;
-    }
-
-    public User setHeight(Double height) {
-        this.height = height;
         return this;
     }
 
@@ -59,21 +52,8 @@ public class User implements QueriesMachine.Selectable, QueriesMachine.Insertabl
         return this;
     }
 
-    public User setWeight(Double weight) {
-        this.weight = weight;
-        return this;
-    }
-
     public Date getBirthday() {
         return birthday;
-    }
-
-    public Double getHeight() {
-        return height;
-    }
-
-    public Double getWeight() {
-        return weight;
     }
 
     public Integer getUserId() {
@@ -97,24 +77,22 @@ public class User implements QueriesMachine.Selectable, QueriesMachine.Insertabl
         userId = resultSet.getInt(1);
         name = resultSet.getString(2);
         surname = resultSet.getString(3);
-        height = resultSet.getDouble(4);
-        weight = resultSet.getDouble(5);
-        sex = resultSet.getString(6);
-        birthday = resultSet.getDate(7);
+        sex = resultSet.getString(4);
+        birthday = resultSet.getDate(5);
     }
 
     @Override
     public String toString() {
-        return userId + " " + name + " " + surname +  " " + height + " " + weight + " " + sex + " " + birthday;
+        return userId + " " + name + " " + surname + " " + sex + " " + birthday;
     }
 
     @Override
     public String[] getMySignature() {
-        return new String[]{"user_id", "name", "surname", "height", "weight", "sex", "birthday"};
+        return new String[]{"user_id", "name", "surname", "sex", "birthday"};
     }
 
     @Override
     public Object[] getMyValues() {
-        return new Object[]{userId, name, surname, height, weight, sex, birthday};
+        return new Object[]{userId, name, surname, sex, birthday};
     }
 }

@@ -11,7 +11,7 @@ public class PostgreSQLJDBC {
 
     private String database = "jdbc:postgresql://localhost:5432/piotrhelm";
     private String username = "piotrhelm";
-    private String password = "";
+    private String password = "lolxdddddddd";
 
     public PostgreSQLJDBC(String database, String username, String password){
         this.database = database;

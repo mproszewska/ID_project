@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.TextFlow?>
+<?import javafx.scene.control.Button?>
+<AnchorPane prefHeight="450.0" prefWidth="600.0" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.Controller.UserDetailedView">
+    <children>
+        <TextFlow fx:id="textFlow"
+                  prefHeight="372.0"
+                  prefWidth="600.0" />
+        <Button layoutX="53.0" layoutY="392.0"
+                mnemonicParsing="false"
+                text="RETURN"
+                onAction="#setReturnButton"
+        />
+        <Button layoutX="449.0" layoutY="392.0" mnemonicParsing="false" text="" />
+    </children>
+</AnchorPane>
