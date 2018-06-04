@@ -13,15 +13,15 @@ public class PostgreSQLJDBC {
     private String username = "piotrhelm";
     private String password = "lolxdddddddd";
 
-    public PostgreSQLJDBC(String database, String username, String password){
+    PostgreSQLJDBC(String database, String username, String password){
         this.database = database;
         this.username = username;
         this.password = password;
     }
 
-    public PostgreSQLJDBC(){}
+    PostgreSQLJDBC(){}
 
-    public void insert(String table, String signature, Object... objects) {
+    private void insert(String table, String signature, Object... objects) {
         Connection c = null;
         Statement stmt = null;
         try {
@@ -37,6 +37,7 @@ public class PostgreSQLJDBC {
             }
             sqlBuilder.setLength(sqlBuilder.length()-1);
             sqlBuilder.append(");");
+            System.out.println(sqlBuilder.toString());
             stmt.execute(sqlBuilder.toString());
             stmt.close();
             c.commit();
@@ -58,6 +59,26 @@ public class PostgreSQLJDBC {
         insert(table, str.toString(), obj.getMyValues());
     }
 
+    public void query(String query){
+        Connection c = null;
+        Statement stmt = null;
+        try {
+            Class.forName("org.postgresql.Driver");
+            c = DriverManager.getConnection(database, username, password);
+            c.setAutoCommit(false);
+            System.out.println("Opened database successfully");
+            stmt = c.createStatement();
+            System.out.println(query);
+            stmt.execute(query);
+            stmt.close();
+            c.close();
+        } catch ( Exception e ) {
+            System.err.println( e.getClass().getName()+": "+ e.getMessage() );
+            System.exit(0);
+        }
+        System.out.println("Operation done successfully");
+    }
+
     public <T extends QueriesMachine.Selectable> List<T> select(String query, Class<T> cl){
         Connection c = null;
         Statement stmt = null;
@@ -68,6 +89,7 @@ public class PostgreSQLJDBC {
             c.setAutoCommit(false);
             System.out.println("Opened database successfully");
             stmt = c.createStatement();
+            System.out.println(query);
             ResultSet rs = stmt.executeQuery(query);
             while(rs.next()){
                 T obj = cl.newInstance();

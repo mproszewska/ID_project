@@ -42,4 +42,8 @@ public class QueriesMachine {
     public List<Activity> getActivities(){
         return database.select("SELECT * FROM activities", Activity.class);
     }
+
+    public void query(String query){
+        database.query(query);
+    }
 }
