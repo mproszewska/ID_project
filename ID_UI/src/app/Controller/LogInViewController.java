@@ -36,7 +36,7 @@ public class LogInViewController implements Initializable {
     @FXML
     private void handleApply(ActionEvent actionEvent) throws IOException {
         Main.changeDatabase("piotrhelm"); //(textFieldDatabase.getText());
-        Main.changePassword("12051997Ph"); //(textFieldPassword.getText());
+        Main.changePassword("lolxd"); //(textFieldPassword.getText());
         Main.changeURL("jdbc:postgresql://localhost:5432/piotrhelm"); ////(textFieldURL.getText());
         FXMLLoader loader = new FXMLLoader(getClass().getResource("../View/Main.fxml"));
         Main.changeScene(actionEvent,loader,"Main");
