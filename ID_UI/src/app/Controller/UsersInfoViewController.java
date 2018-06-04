@@ -7,6 +7,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.control.ListView;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import java.io.IOException;
@@ -18,7 +19,7 @@ import java.util.ResourceBundle;
  */
 public class UsersInfoViewController implements Initializable {
     @FXML
-    private TextFlow textFlow;
+    private ListView listView;
 
     public void setReturnButton(ActionEvent actionEvent) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("../View/Main.fxml"));
@@ -29,11 +30,8 @@ public class UsersInfoViewController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         QueriesMachine qMachine = new QueriesMachine();
         java.util.List<User> users = qMachine.getUsers();
-        String sb = "";
         for(User u : users){
-            sb = sb + u.toString() + "\n";
+            listView.getItems().add(u.toString());
         }
-        Text text = new Text(sb);
-        textFlow.getChildren().add(text);
     }
 }
