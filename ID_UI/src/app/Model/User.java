@@ -8,6 +8,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Objects;
 
 public class User implements QueriesMachine.Selectable, QueriesMachine.Insertable {
     private Integer userId;
@@ -83,7 +84,7 @@ public class User implements QueriesMachine.Selectable, QueriesMachine.Insertabl
 
     @Override
     public String toString() {
-        return userId + " " + name + " " + surname + " " + sex + " " + birthday;
+        return userId + " " + name + " " + surname + " " + birthday + " (" + (Objects.equals(sex, "m") ?"male)" : "female)");
     }
 
     @Override
