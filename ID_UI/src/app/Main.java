@@ -12,8 +12,12 @@ import java.io.IOException;
 
 public class Main extends Application {
 
-    static String userName;
-    static String userSurname;
+    static String userName = "";
+    static String userSurname = "";
+
+    static String database = "";
+    static String password = "";
+    static String URL = "";
 
     @Override
     public void start(Stage primaryStage) throws Exception{
@@ -44,6 +48,36 @@ public class Main extends Application {
     public static void clearData() {
         userName = "";
         userSurname = "";
+    }
+
+    public static void changeDatabase(String in) {
+        database = in;
+    }
+
+    public static String getDatabase() {
+        return database;
+    }
+
+    public static void changePassword(String in) {
+        password = in;
+    }
+
+    public static String getPassword() {
+        return password;
+    }
+
+    public static void changeURL(String in) {
+        URL = in;
+    }
+
+    public static String getURL() {
+        return URL;
+    }
+
+    public static boolean checkDBargs() {
+        if(URL.isEmpty() || password.isEmpty() || database.isEmpty())
+            return false;
+        return true;
     }
 
     public static void main(String[] args) {

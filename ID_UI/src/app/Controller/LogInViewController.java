@@ -7,33 +7,42 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 /**
  * Created by piotrhelm on 01.06.18.
  */
-public class ActivitiesViewController implements Initializable {
+public class LogInViewController implements Initializable {
     @FXML
-    private TextFlow textFlow;
+    private TextField textFieldDatabase;
+
+    @FXML
+    private TextField textFieldPassword;
+
+    @FXML
+    private TextField textFieldURL;
 
     public void setReturnButton(ActionEvent actionEvent) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("../View/Main.fxml"));
         Main.changeScene(actionEvent,loader,"Main");
     }
 
+    @FXML
+    private void handleApply(ActionEvent actionEvent) throws IOException {
+        Main.changeDatabase(textFieldDatabase.getText());
+        Main.changePassword(textFieldPassword.getText());
+        Main.changeURL(textFieldURL.getText());
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("../View/Main.fxml"));
+        Main.changeScene(actionEvent,loader,"Main");
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        QueriesMachine qMachine = new QueriesMachine();
-        java.util.List<Activity> activities = qMachine.getActivities();
-        String sb = "";
-        for(Activity i : activities){
-            sb = sb + i.toString() + "\n";
-        }
-        Text text = new Text(sb);
-        textFlow.getChildren().add(text);
     }
 }
