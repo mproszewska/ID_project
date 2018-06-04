@@ -20,8 +20,6 @@ public class UserInfoViewController implements Initializable {
     @FXML
     private TextField textFieldSurname;
 
-
-
     public void setReturnButton(ActionEvent actionEvent) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("../View/Main.fxml"));
         Main.changeScene(actionEvent,loader,"Main");

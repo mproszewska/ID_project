@@ -1,5 +1,7 @@
 package app.DB;
 
+import app.Main;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -8,10 +10,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PostgreSQLJDBC {
-
-    private String database = "jdbc:postgresql://localhost:5432/piotrhelm";
-    private String username = "piotrhelm";
-    private String password = "lolxdddddddd";
+    /*
+    jdbc:postgresql://localhost:5432/piotrhelm
+    piotrhelm
+     */
+    private String database = Main.getURL();
+    private String username = Main.getDatabase();
+    private String password = Main.getPassword();
 
     public PostgreSQLJDBC(String database, String username, String password){
         this.database = database;

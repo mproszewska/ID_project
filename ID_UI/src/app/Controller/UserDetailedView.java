@@ -12,6 +12,7 @@ import javafx.scene.text.TextFlow;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 /**
@@ -30,7 +31,7 @@ public class UserDetailedView implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         if(!Main.getUserName().equals("") && !Main.getUserSurname().equals("")) {
             QueriesMachine qMachine = new QueriesMachine();
-            java.util.List<User> users = qMachine.getUser(Main.getUserName(), Main.getUserSurname());
+            List<User> users = qMachine.getUser(Main.getUserName(), Main.getUserSurname());
             String sb = "";
             for (User i : users) {
                 sb = sb + i.toString() + "\n";
@@ -39,7 +40,7 @@ public class UserDetailedView implements Initializable {
             Text text;
 
             if(users.size() == 0)
-                text = new Text("ERROR!!! INVALID DATA FOR USER. TRY AGAIN.");
+                text = new Text("ERROR!!! NO SUCH USER IN DATABASE. TRY AGAIN.");
             else
                 text = new Text(sb);
 
