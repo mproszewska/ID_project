@@ -35,6 +35,10 @@ public class QueriesMachine {
         return database.select(in, User.class);
     }
 
+    public void query(String query){
+        database.query(query);
+    }
+
     public void addUser(User user){
         database.insert("users", user);
     }

@@ -53,14 +53,34 @@ public class PostgreSQLJDBC {
         System.out.println("Records created successfully");
     }
 
-    public void insert(String table, QueriesMachine.Insertable obj){
+    public void insert(String table, QueriesMachine.Insertable obj) {
         StringBuilder str = new StringBuilder();
         str.append("(");
         for (String signs : obj.getMySignature())
             str.append(signs).append(",");
-        str.setLength(str.length()-1);
+        str.setLength(str.length() - 1);
         str.append(")");
         insert(table, str.toString(), obj.getMyValues());
+    }
+
+    public void query(String query){
+        Connection c = null;
+        Statement stmt = null;
+        try {
+            Class.forName("org.postgresql.Driver");
+            c = DriverManager.getConnection(database, username, password);
+            c.setAutoCommit(false);
+            System.out.println("Opened database successfully");
+            stmt = c.createStatement();
+            System.out.println(query);
+            stmt.execute(query);
+            stmt.close();
+            c.close();
+        } catch ( Exception e ) {
+            System.err.println( e.getClass().getName()+": "+ e.getMessage() );
+            System.exit(0);
+        }
+        System.out.println("Operation done successfully");
     }
 
     public <T extends QueriesMachine.Selectable> List<T> select(String query, Class<T> cl){
