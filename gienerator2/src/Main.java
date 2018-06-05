@@ -16,10 +16,10 @@ public class Main {
         System.out.println("Enter heartrate meassurment duration (5-3600):");
         int resolution = reader.nextInt();
         System.out.println("Let's generate!");
-        Medicaments.generate(date, users, 10, 1000, 16);
+        Medicaments.generate(date, 20, 10, 1000, 16);
         Heartrate.generate(date, users, resolution);
-        Sleeps.generate(date, users);
-        Sessions.generate(date, users);
+        Sleeps.generate(date, 20);
+        Sessions.generate(date, 20);
         reader.close();
         System.out.println("Finished!");
     }
