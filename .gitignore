@@ -1,2 +1,6 @@
 
 gienerator2/\.idea/
+
+*.xml
+
+*.iml

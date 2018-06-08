@@ -13,7 +13,7 @@ public class Sessions {
         DateTime today = new DateTime().minusDays(1);
 
         try (PrintWriter userOut = new PrintWriter("user_session.sql"); PrintWriter sessionOut = new PrintWriter("sessions.sql")) {
-            userOut.println("COPY user_session (user_id, session_id,distance,start_time,end_time) FROM stdin;");
+            userOut.println("COPY user_session (user_id, session_id,distance) FROM stdin;");
             sessionOut.println("COPY sessions (session_id, activity_id, start_time,end_time,description,trainer_id) FROM stdin;");
             int sessionId = 1;
             for (int j = 1; j <= users; j++) {
@@ -37,7 +37,8 @@ public class Sessions {
                             when = day.withHourOfDay(14).plusMinutes(10*random.nextInt(18));
 
                         until = when.plusMinutes(30 + 10*random.nextInt(10));
-                        userOut.println(j + "\t" + sessionId + "\t" + getDistance(discipline) + "\t" + fmt.print(when) + "\t" + fmt.print(until));
+//                        userOut.println(j + "\t" + sessionId + "\t" + getDistance(discipline) + "\t" + fmt.print(when) + "\t" + fmt.print(until));
+                        userOut.println(j + "\t" + sessionId + "\t" + getDistance(discipline));
                         sessionOut.println(sessionId + "\t" + discipline + "\t" + fmt.print(when) + "\t" + fmt.print(until) + "\t" + "\\N" + "\t" + "\\N");
                         sessionId++;
                     }
