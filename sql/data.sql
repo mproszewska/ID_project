@@ -1,5 +1,6 @@
 --generator
 
+
 COPY users (name, surname,sex,birthday) FROM stdin;
 Dzwonisław	Krzakiel	m	1989-02-20
 Brzęczysław	Brząk	m	1990-12-03
@@ -78,6 +79,7 @@ COPY sections (activity_id, name,city,trainer_id,max_age) FROM stdin;
 1	Klub Bieżnika	Bieżanów	10	\N
 \.
 
+
 COPY accidents ("date") FROM stdin;
 2016-07-12 10:50:00
 2016-04-06 16:00:00
@@ -85,12 +87,10 @@ COPY accidents ("date") FROM stdin;
 2016-12-31 23:51:00
 2017-03-02 10:51:00
 \.
-
 COPY injuries (user_id, accident_id, description,duration) FROM stdin;
 1	2	złamana noga	3 weeks
 5	1	złamana ręka	10 days
 \.
-
 COPY user_section (user_id, section_id,start_time) FROM stdin;
 1	1	2001-07-31
 1	3	2007-07-31
