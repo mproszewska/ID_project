@@ -105,8 +105,8 @@
         <option value="$PROJECT_DIR$/src/sleeps.java" />
         <option value="$PROJECT_DIR$/src/Sleeps.java" />
         <option value="$PROJECT_DIR$/src/Heartrate.java" />
-        <option value="$PROJECT_DIR$/src/Medicaments.java" />
         <option value="$PROJECT_DIR$/src/Sessions.java" />
+        <option value="$PROJECT_DIR$/src/Medicaments.java" />
         <option value="$PROJECT_DIR$/src/Main.java" />
         <option value="$PROJECT_DIR$/src/Noise.java" />
       </list>
@@ -490,7 +490,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Heartrate.java">
+    <entry file="file://$PROJECT_DIR$/src/Sessions.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="780">
           <caret line="39" column="62" lean-forward="false" selection-start-line="39" selection-start-column="62" selection-end-line="39" selection-end-column="62" />

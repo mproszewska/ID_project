@@ -9,17 +9,18 @@ import java.util.Random;
 public class Medicaments {
     public static void generate(String date, int users, int downBound, int upBound, int medCount) throws Exception {
         Random random = new Random();
-        DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
-        DateTime startTime = fmt.parseDateTime(date);
+        DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss.SSSSS");
+        DateTime startTime = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss").parseDateTime(date);
         DateTime today = new DateTime().minusDays(1);
         Integer daysBetween = Days.daysBetween(startTime, today).getDays();
+        System.out.println(daysBetween);
         try (PrintWriter out = new PrintWriter("supplies.sql")) {
             out.println("COPY user_medication (user_id, medication_id, \"date\", portion) FROM stdin;");
             for (int j = 1; j <= users; j++) {
                 Integer count = random.nextInt(upBound-downBound) + downBound;
                 for (int i = 0; i < count; i++) {
-                    DateTime when = today.plusDays(random.nextInt(daysBetween));
-                    when = when.withHourOfDay(7).plusHours(random.nextInt(12)).plusMinutes(random.nextInt(60));
+                    DateTime when = startTime.plusDays(random.nextInt(daysBetween));
+                    when = when.withHourOfDay(7).plusMillis(random.nextInt(46800000));
                     out.println(j + "\t" + (random.nextInt(medCount)+1) + "\t" + fmt.print(when) + "\t" + (random.nextInt(4)+1));
                 }
             }
