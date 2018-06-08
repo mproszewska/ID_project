@@ -19,10 +19,16 @@ public class SelectContainer implements QueriesMachine.Selectable, Iterable<Obje
 
     @Override
     public String toString() {
+        return toString(", ");
+    }
+
+    public String toString(String separator){
         StringBuilder str = new StringBuilder();
+        str.append("(");
         for (Object obj : objects)
-            str.append(obj).append(", ");
+            str.append(obj).append(separator);
         str.setLength(str.length()-2);
+        str.append(")");
         return str.toString();
     }
 
