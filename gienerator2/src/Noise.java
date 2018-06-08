@@ -12,7 +12,6 @@ public class Noise {
 
         for (int i = 0; i <= n; i++)
         {
-
             float frequency = (float) Math.pow(2, i);
             double amplitude = Math.pow(p, i);
             total += interpolatedNoise(x * frequency) * amplitude;

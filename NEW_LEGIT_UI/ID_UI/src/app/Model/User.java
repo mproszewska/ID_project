@@ -84,16 +84,16 @@ public class User implements QueriesMachine.Selectable, QueriesMachine.Insertabl
 
     @Override
     public String toString() {
-        return userId + " " + name + " " + surname + " " + birthday + " (" + (Objects.equals(sex, "m") ?"male)" : "female)");
+        return name + " " + surname + " " + birthday + " (" + (Objects.equals(sex, "m") ?"male)" : "female)");
     }
 
     @Override
     public String[] getMySignature() {
-        return new String[]{"user_id", "name", "surname", "sex", "birthday"};
+        return new String[]{"name", "surname", "sex", "birthday"};
     }
 
     @Override
     public Object[] getMyValues() {
-        return new Object[]{userId, name, surname, sex, birthday};
+        return new Object[]{name, surname, sex, birthday};
     }
 }
