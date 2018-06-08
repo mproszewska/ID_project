@@ -20,12 +20,11 @@ public class Main {
         int upper = reader.nextInt();
         System.out.println("Enter medicaments count (2-16):");
         int medicationsCount = reader.nextInt();
-        System.out.println("Let's generate!");
+        System.out.println("generating...");
         Medicaments.generate(date, 20, lower, upper, medicationsCount);
         Heartrate.generate(date, users, resolution);
         Sleeps.generate(date, 20);
         Sessions.generate(date, 20);
         reader.close();
-        System.out.println("Finished!");
     }
 }

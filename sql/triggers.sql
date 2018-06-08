@@ -140,3 +140,26 @@ if(select count(*) from user_section where section_id=NEW.section_id and coalesc
 return NEW;
 END;
 $f$ LANGUAGE plpgsql;
+
+
+CREATE TRIGGER sleep_trigger BEFORE INSERT OR UPDATE ON sleep
+FOR EACH ROW EXECUTE PROCEDURE sleep_check();
+
+CREATE TRIGGER heartrates_trigger BEFORE INSERT OR UPDATE ON heartrates
+FOR EACH ROW EXECUTE PROCEDURE heartrates_check();
+
+CREATE TRIGGER injuries_trigger BEFORE INSERT OR UPDATE ON injuries
+FOR EACH ROW EXECUTE PROCEDURE injuries_check();
+
+CREATE TRIGGER sections_tigger BEFORE INSERT OR UPDATE ON sections
+FOR EACH ROW EXECUTE PROCEDURE sections_check();
+
+CREATE TRIGGER sessions_trigger BEFORE INSERT OR UPDATE ON sessions
+FOR EACH ROW EXECUTE PROCEDURE sessions_check();
+
+CREATE TRIGGER user_section_trigger BEFORE INSERT OR UPDATE ON user_section
+FOR EACH ROW EXECUTE PROCEDURE user_section_check();
+
+CREATE TRIGGER user_session_trigger BEFORE INSERT OR UPDATE ON user_session
+FOR EACH ROW EXECUTE PROCEDURE user_session_check();
+

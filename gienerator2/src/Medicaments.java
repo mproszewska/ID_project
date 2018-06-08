@@ -13,7 +13,6 @@ public class Medicaments {
         DateTime startTime = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss").parseDateTime(date);
         DateTime today = new DateTime().minusDays(1);
         Integer daysBetween = Days.daysBetween(startTime, today).getDays();
-        System.out.println(daysBetween);
         try (PrintWriter out = new PrintWriter("supplies.sql")) {
             out.println("COPY user_medication (user_id, medication_id, \"date\", portion) FROM stdin;");
             for (int j = 1; j <= users; j++) {

@@ -1,6 +1,6 @@
  DROP FUNCTION sections_check() cascade;
- DROP FUNCTION sleep_check() cascade;
- DROP FUNCTION heartrates_check() cascade;
+ DROP FUNCTION sleep_check();
+ DROP FUNCTION heartrates_check();
  DROP FUNCTION injuries_check() cascade;
  DROP FUNCTION sessions_check() cascade;
  DROP FUNCTION user_section_check() cascade ;
@@ -15,15 +15,15 @@
  DROP FUNCTION kcal_during_session(integer, integer) cascade;
  drop table "medications" cascade;
  drop table "user_session" cascade;
- drop table "user_medication" cascade;
- drop table "user_section" cascade;
- drop table "sessions" cascade;
- drop table "heartrates" cascade;
- drop table "height_weight" cascade;
- drop table "accidents" cascade;
- drop table "injuries" cascade;
- drop table "users" cascade;
- drop table "sections" cascade;
- drop table "sleep" cascade;
+ drop table  "user_medication" cascade;
+ drop table  "user_section" cascade;
+ drop table  "sessions" cascade;
+ drop table  "heartrates" cascade;
+ drop table  "height_weight" cascade;
+ drop table  "accidents" cascade;
+ drop table  "injuries" cascade;
+ drop table  "users" cascade;
+ drop table  "sections" cascade;
+ drop table  "sleep" cascade;
  drop table "activities" cascade;
 
