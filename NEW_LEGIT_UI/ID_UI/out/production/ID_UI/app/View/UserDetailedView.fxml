@@ -5,13 +5,25 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.TextFlow?>
 
-<AnchorPane prefHeight="450.0" prefWidth="503.0" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.Controller.UserDetailedView">
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.RowConstraints?>
+<GridPane gridLinesVisible="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="450.0" prefWidth="600.0" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.Controller.UserDetailedViewController">
+    <columnConstraints>
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+    </rowConstraints>
     <children>
-        <TextFlow fx:id="textFlow" prefHeight="372.0" prefWidth="600.0">
-         <opaqueInsets>
-            <Insets left="10.0" right="10.0" top="10.0" />
-         </opaqueInsets></TextFlow>
-        <Button layoutX="53.0" layoutY="392.0" mnemonicParsing="false" onAction="#setReturnButton" text="RETURN" />
-        <Button layoutX="449.0" layoutY="392.0" mnemonicParsing="false" text="" />
+        <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="150.0" prefWidth="300.0" text="" />
+        <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="150.0" prefWidth="300.0" text="" GridPane.columnIndex="1" />
+        <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="150.0" prefWidth="300.0" text="" GridPane.rowIndex="1" />
+        <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#showInfo" prefHeight="150.0" prefWidth="300.0" text="user info" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+        <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="150.0" prefWidth="300.0" text="add" GridPane.rowIndex="2" />
+        <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#setReturnButton" prefHeight="150.0" prefWidth="300.0" text="return" GridPane.columnIndex="1" GridPane.rowIndex="2" />
     </children>
-</AnchorPane>
+</GridPane>

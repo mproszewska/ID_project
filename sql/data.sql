@@ -1,6 +1,5 @@
 --generator
 
-
 COPY users (name, surname,sex,birthday) FROM stdin;
 Dzwonisław	Krzakiel	m	1989-02-20
 Brzęczysław	Brząk	m	1990-12-03
@@ -79,7 +78,6 @@ COPY sections (activity_id, name,city,trainer_id,max_age) FROM stdin;
 1	Klub Bieżnika	Bieżanów	10	\N
 \.
 
-
 COPY accidents ("date") FROM stdin;
 2016-07-12 10:50:00
 2016-04-06 16:00:00
@@ -87,10 +85,12 @@ COPY accidents ("date") FROM stdin;
 2016-12-31 23:51:00
 2017-03-02 10:51:00
 \.
+
 COPY injuries (user_id, accident_id, description,duration) FROM stdin;
 1	2	złamana noga	3 weeks
 5	1	złamana ręka	10 days
 \.
+
 COPY user_section (user_id, section_id,start_time) FROM stdin;
 1	1	2001-07-31
 1	3	2007-07-31
@@ -103,6 +103,7 @@ COPY user_section (user_id, section_id,start_time) FROM stdin;
 8	4	2011-07-31
 9	1	2006-07-31
 \.
+
 COPY sessions (activity_id, start_time,end_time,description,trainer_id,section_id) FROM stdin;
 1	2016-07-12 10:40:00	2016-07-12 11:40:00	\N	2	\N
 6	2016-07-12 14:40:00	2016-07-12 16:40:00	\N	2	\N
@@ -118,6 +119,7 @@ COPY sessions (activity_id, start_time,end_time,description,trainer_id,section_i
 3	2016-09-11 22:00:00	2016-09-12 06:00:00	\N	\N	\N
 5	2016-01-10 07:00:00	2016-01-10 08:05:00	\N	\N	\N
 \.
+
 COPY user_session (user_id, session_id,distance) FROM stdin;
 1	1	3000
 1	2	\N
@@ -129,10 +131,12 @@ COPY user_session (user_id, session_id,distance) FROM stdin;
 3	2	5000
 4	1	5000
 \.
+
 COPY sleep(user_id,start_time, end_time) FROM stdin;
 1 	2016-07-11 20:40:00	2016-07-12 08:40:00
 1 	2016-07-12 20:40:00	2016-07-13 08:40:00
 \.
+
 COPY heartrates (user_id, avg_heartrate, start_time, end_time) FROM stdin;
 1	120	2016-07-12 10:30:00	2016-07-12 11:00:00
 1	80	2016-07-12 11:00:00	2016-07-12 11:10:00
