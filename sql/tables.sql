@@ -21,9 +21,6 @@ CREATE TABLE  sleep (
 
 ALTER TABLE sleep ADD CONSTRAINT cns_sleep_0 CHECK ( start_time < end_time );
 
-CREATE TRIGGER sleep_trigger BEFORE INSERT OR UPDATE ON sleep
-FOR EACH ROW EXECUTE PROCEDURE sleep_check();
-
 DROP TABLE IF EXISTS activities CASCADE;
 CREATE TABLE activities ( 
 	activity_id          serial,
@@ -54,8 +51,6 @@ ALTER TABLE heartrates ADD CONSTRAINT cns_heartrates CHECK ( start_time<end_time
 
 CREATE INDEX idx_heartrates_user_session_id ON heartrates ( user_id );
 
-CREATE TRIGGER heartrates_trigger BEFORE INSERT OR UPDATE ON heartrates
-FOR EACH ROW EXECUTE PROCEDURE heartrates_check();
 
 DROP TABLE IF EXISTS height_weight CASCADE;
 CREATE TABLE height_weight ( 
@@ -92,9 +87,6 @@ CREATE TABLE injuries (
 	CONSTRAINT fk_injuries_users FOREIGN KEY ( user_id ) REFERENCES users( user_id ) ON DELETE cascade 
  );
 
-CREATE TRIGGER injuries_trigger BEFORE INSERT OR UPDATE ON injuries
-FOR EACH ROW EXECUTE PROCEDURE injuries_check();
-
 CREATE INDEX idx_injuries_accident_id ON injuries ( accident_id );
 
 CREATE INDEX idx_injuries_user_id ON injuries ( user_id );
@@ -126,9 +118,6 @@ ALTER TABLE sections ADD CONSTRAINT cns_sections_1 CHECK ( sex is null or sex='k
 
 CREATE INDEX idx_sections_trainer_id ON sections ( trainer_id );
 
-CREATE TRIGGER sections_tigger BEFORE INSERT OR UPDATE ON sections
-FOR EACH ROW EXECUTE PROCEDURE sections_check();
-
 DROP TABLE IF EXISTS sessions CASCADE;
 CREATE TABLE sessions ( 
 	session_id           serial,
@@ -153,9 +142,6 @@ CREATE INDEX idx_sessions_description ON sessions ( description );
 CREATE INDEX idx_sessions_trainer_id ON sessions ( trainer_id );
 
 CREATE INDEX idx_sessions_section_id ON sessions ( section_id );
-
-CREATE TRIGGER sessions_trigger BEFORE INSERT OR UPDATE ON sessions
-FOR EACH ROW EXECUTE PROCEDURE sessions_check();
 
 DROP TABLE IF EXISTS user_medication CASCADE;
 CREATE TABLE user_medication ( 
@@ -190,9 +176,6 @@ CREATE INDEX idx_people_user_id ON user_section ( user_id );
 
 CREATE INDEX idx_people_section_id ON user_section ( section_id );
 
-CREATE TRIGGER user_section_trigger BEFORE INSERT OR UPDATE ON user_section
-FOR EACH ROW EXECUTE PROCEDURE user_section_check();
-
 DROP TABLE IF EXISTS user_session CASCADE;
 CREATE TABLE user_session ( 
 	user_id              integer  NOT NULL,
@@ -209,5 +192,4 @@ CREATE INDEX idx_user_session_user_id ON user_session ( user_id );
 
 CREATE INDEX idx_user_session_session1_id ON user_session ( session_id );
 
-CREATE TRIGGER user_session_trigger BEFORE INSERT OR UPDATE ON user_session
-FOR EACH ROW EXECUTE PROCEDURE user_session_check();
+

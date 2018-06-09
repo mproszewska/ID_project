@@ -1,6 +1,34 @@
 --funtions
 
 ----
+CREATE OR REPLACE FUNCTION get_weight(userid INTEGER, day DATE)
+  RETURNS NUMERIC(3) AS
+$$
+SELECT
+  weight
+FROM height_weight
+WHERE weight IS NOT NULL AND user_id = userid AND date <= day
+ORDER BY date DESC
+LIMIT 1;
+$$
+LANGUAGE sql;
+
+
+----
+CREATE OR REPLACE FUNCTION get_heigth(userid INTEGER, day DATE)
+  RETURNS NUMERIC(3) AS
+$$
+SELECT
+  height
+FROM height_weight
+WHERE height_weight.height IS NOT NULL AND user_id = userid AND date <= day
+ORDER BY date DESC
+LIMIT 1;
+$$
+LANGUAGE sql;
+
+
+----
 CREATE OR REPLACE FUNCTION kcal_during_session(userid INTEGER, sessionid INTEGER)
   RETURNS NUMERIC AS $$
 DECLARE
@@ -31,12 +59,7 @@ BEGIN
   age_0 = (SELECT DATE_PART('year', start_0 :: DATE) - DATE_PART('year', birthday :: DATE)
            FROM users
            WHERE user_id = userid);
-  weight_0 = (SELECT weight
-              FROM height_weight
-              WHERE weight IS NOT NULL AND user_id = userid AND "date" = (SELECT max("date")
-                                                                          FROM height_weight
-                                                                          WHERE
-                                                                            user_id = userid AND "date" <= start_0));
+  weight_0 = get_weight(userid, start_0::DATE);
   seconds = (SELECT EXTRACT(EPOCH FROM (end_0 - start_0)));
   lasttime = start_0;
   heartrates_0 = 0;
@@ -88,18 +111,8 @@ DECLARE
 BEGIN
   IF date_0 IS NULL
   THEN date_0 = CURRENT_DATE; END IF;
-  weight_0 = (SELECT weight
-              FROM height_weight
-              WHERE user_id = user_id_0 AND weight IS NOT NULL AND
-                    "date" = (SELECT max("date")
-                              FROM height_weight
-                              WHERE user_id = user_id_0 AND "date" <= date_0 AND weight IS NOT NULL));
-  height_0 = (SELECT height
-              FROM height_weight
-              WHERE user_id = user_id_0 AND height IS NOT NULL AND
-                    "date" = (SELECT max("date")
-                              FROM height_weight
-                              WHERE user_id = user_id_0 AND "date" <= date_0 AND height IS NOT NULL)) / 100;
+  weight_0 = get_weight(user_id_0, date_0);
+  height_0 = get_heigth(user_id_0, date_0) / 100;
   RETURN ROUND(weight_0 / (height_0 * height_0), 2);
 END;
 $$
@@ -144,27 +157,71 @@ ORDER BY "date"
 $$
 LANGUAGE SQL;
 
+----
+CREATE OR REPLACE VIEW user_min_max_heartrate(user_id, min, max)
+  AS
+    SELECT
+      u.user_id,
+      min(avg_heartrate),
+      max(avg_heartrate)
+    FROM users u
+      LEFT JOIN heartrates h ON u.user_id = h.user_id
+    GROUP BY u.user_id
+    ORDER BY 1;
 
-----TODO
-CREATE OR REPLACE FUNCTION heartrate_session_type(user_id INTEGER, session_id INTEGER)
-  RETURNS VARCHAR AS $$
+
+----
+drop FUNCTION IF EXISTS heartrate_session_type(INTEGER, INTEGER);
+CREATE OR REPLACE FUNCTION heartrate_session_type(user_idd INTEGER, session_idd INTEGER)
+  RETURNS VARCHAR AS
+$$
+DECLARE
+  avg NUMERIC;
+  mini NUMERIC;
+  maxi NUMERIC;
+  perc NUMERIC;
 BEGIN
-  RETURN "x";
+  avg = (SELECT avg(avg_heartrate)
+         FROM heartrates
+         WHERE start_time BETWEEN (SELECT start_time FROM sessions WHERE session_id = session_idd)
+               AND (SELECT sessions.end_time FROM sessions WHERE session_id = session_idd)
+               AND user_id = user_idd
+         GROUP BY user_id);
+  mini = (SELECT min FROM user_min_max_heartrate WHERE user_id = user_idd);
+  maxi = (SELECT max FROM user_min_max_heartrate WHERE user_id = user_idd);
+  perc = 100*(avg-mini)/(maxi-mini);
+  IF perc < 50 THEN
+    RETURN 'COACH PATATO WALK';
+  END IF;
+  IF perc < 60 THEN
+    RETURN 'VERY LIGHT';
+  END IF;
+  IF perc < 70 THEN
+    RETURN 'LIGHT';
+  END IF;
+  IF perc < 80 THEN
+    RETURN 'MODERATE';
+  END IF;
+  IF perc < 90 THEN
+    RETURN 'HARD';
+  END IF;
+  IF perc <= 100 THEN
+    RETURN 'MAXIMUM';
+  END IF;
 END;
 $$
 LANGUAGE plpgsql;
 
-
 ----
-CREATE OR REPLACE FUNCTION timetable(id INTEGER, day DATE)
-  RETURNS TABLE(name VARCHAR, start_time TIMESTAMP, end_time TIMESTAMP, distance NUMERIC, description VARCHAR) AS
+CREATE OR REPLACE FUNCTION timetable(user_idd INTEGER, day DATE)
+  RETURNS TABLE(session_id INTEGER, name VARCHAR, start_time TIMESTAMP, end_time TIMESTAMP, distance NUMERIC, description VARCHAR) AS
 $$
 SELECT
-  name, s.start_time, s.end_time, distance, description
+  name, s.session_id, s.start_time, s.end_time, distance, description
 FROM user_session us
   JOIN sessions s ON us.session_id = s.session_id
   JOIN activities a ON s.activity_id = a.activity_id
-WHERE user_id = id AND s.start_time::DATE = day;
+WHERE user_id = user_idd AND s.start_time::DATE = day;
 $$
 LANGUAGE sql;
 
@@ -181,6 +238,7 @@ SELECT ARRAY(SELECT DISTINCT name
 $$
 LANGUAGE SQL;
 
+----
 DROP VIEW IF EXISTS activities_meds;
 CREATE OR REPLACE VIEW activities_meds
   AS
@@ -196,6 +254,7 @@ CREATE OR REPLACE VIEW activities_meds
       JOIN sessions s ON us.session_id = s.session_id
       JOIN activities a ON s.activity_id = a.activity_id;
 
+----
 DROP FUNCTION IF EXISTS get_best_stuff(INTEGER);
 CREATE OR REPLACE FUNCTION get_best_stuff(act_id INTEGER)
   RETURNS TABLE(medications CHARACTER VARYING[],avg_result NUMERIC) AS
@@ -210,17 +269,13 @@ ORDER BY result DESC LIMIT 1;
 $$
 LANGUAGE sql;
 
+----
 CREATE VIEW best_medication_sets(activity, medication_set, result) AS
   SELECT
     a.name,
     (select gb.medications from get_best_stuff(a.activity_id) gb),
     (select gb.avg_result from get_best_stuff(a.activity_id) gb)
   FROM activities a;
-
-
-SELECT * FROM best_medication_sets
-
-
 
 
 ------------TODO
@@ -232,6 +287,7 @@ BEGIN
 END;
 $$
 LANGUAGE plpgsql;
+
 ---------------------TODO
 CREATE OR REPLACE FUNCTION medications_sessions(user_id INTEGER, fist DATE, last DATE)
   RETURNS TABLE(mediaction_id INTEGER) AS $$
@@ -276,3 +332,4 @@ BEGIN
 END;
 $f$
 LANGUAGE plpgsql;
+
