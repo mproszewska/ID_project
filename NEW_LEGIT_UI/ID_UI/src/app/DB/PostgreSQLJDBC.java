@@ -14,19 +14,23 @@ public class PostgreSQLJDBC {
     jdbc:postgresql://localhost:5432/piotrhelm
     piotrhelm
      */
-    private String database = Main.getURL();
+    /*private String database = Main.getURL();
     private String username = Main.getDatabase();
-    private String password = Main.getPassword();
+    private String password = Main.getPassword();*/
 
-    public PostgreSQLJDBC(String database, String username, String password){
+    private String database = "jdbc:postgresql://localhost:5432/piotrhelm";
+    private String username = "piotrhelm";
+    private String password = "12051997Ph";
+
+    PostgreSQLJDBC(String database, String username, String password){
         this.database = database;
         this.username = username;
         this.password = password;
     }
 
-    public PostgreSQLJDBC(){}
+    PostgreSQLJDBC(){}
 
-    public void insert(String table, String signature, Object... objects) {
+    private void insert(String table, String signature, Object... objects) {
         Connection c = null;
         Statement stmt = null;
         try {
@@ -42,6 +46,7 @@ public class PostgreSQLJDBC {
             }
             sqlBuilder.setLength(sqlBuilder.length()-1);
             sqlBuilder.append(");");
+            System.out.println(sqlBuilder);
             stmt.execute(sqlBuilder.toString());
             stmt.close();
             c.commit();
@@ -53,7 +58,7 @@ public class PostgreSQLJDBC {
         System.out.println("Records created successfully");
     }
 
-    public void insert(String table, QueriesMachine.Insertable obj) {
+    void insert(String table, QueriesMachine.Insertable obj) {
         StringBuilder str = new StringBuilder();
         str.append("(");
         for (String signs : obj.getMySignature())
@@ -63,7 +68,7 @@ public class PostgreSQLJDBC {
         insert(table, str.toString(), obj.getMyValues());
     }
 
-    public void query(String query){
+    void query(String query){
         Connection c = null;
         Statement stmt = null;
         try {
@@ -75,6 +80,7 @@ public class PostgreSQLJDBC {
             System.out.println(query);
             stmt.execute(query);
             stmt.close();
+            c.commit();
             c.close();
         } catch ( Exception e ) {
             System.err.println( e.getClass().getName()+": "+ e.getMessage() );
@@ -83,7 +89,7 @@ public class PostgreSQLJDBC {
         System.out.println("Operation done successfully");
     }
 
-    public <T extends QueriesMachine.Selectable> List<T> select(String query, Class<T> cl){
+    <T extends QueriesMachine.Selectable> List<T> select(String query, Class<T> cl) {
         Connection c = null;
         Statement stmt = null;
         List<T> list = new ArrayList<>();
@@ -94,7 +100,7 @@ public class PostgreSQLJDBC {
             System.out.println("Opened database successfully");
             stmt = c.createStatement();
             ResultSet rs = stmt.executeQuery(query);
-            while(rs.next()){
+            while (rs.next()) {
                 T obj = cl.newInstance();
                 obj.setMeFromResult(rs);
                 list.add(obj);
@@ -102,12 +108,11 @@ public class PostgreSQLJDBC {
             rs.close();
             stmt.close();
             c.close();
-        } catch ( Exception e ) {
-            System.err.println( e.getClass().getName()+": "+ e.getMessage() );
+        } catch (Exception e) {
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
             System.exit(0);
         }
         System.out.println("Operation done successfully");
         return list;
     }
-
 }

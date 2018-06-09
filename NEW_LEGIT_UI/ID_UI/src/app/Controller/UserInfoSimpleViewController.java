@@ -2,6 +2,7 @@ package app.Controller;
 
 import app.DB.QueriesMachine;
 import app.Main;
+import app.Model.SelectContainer;
 import app.Model.User;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -12,6 +13,7 @@ import javafx.scene.text.Text;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 /**
@@ -44,6 +46,18 @@ public class UserInfoSimpleViewController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        QueriesMachine qMachine = new QueriesMachine();
+        java.util.List<SelectContainer> container = qMachine.select
+                ("SELECT * FROM users " +
+                                "LEFT JOIN height_weight ON users.user_id = height_weight.user_id " +
+                                "WHERE name LIKE '" + Main.getUserName() + "' and surname like '" + Main.getUserSurname() + "'"
+                        , SelectContainer.class);
 
+        textName.setText(container.get(0).getAt(1).toString());
+        textSurname.setText(container.get(0).getAt(2).toString());
+        textSex.setText(Objects.equals(container.get(0).getAt(3), "m") ?"Male" : "Female");
+        textBirthday.setText(container.get(0).getAt(4).toString());
+        textHeight.setText(container.get(0).getAt(6).toString());
+        textWeight.setText(container.get(0).getAt(7).toString());
     }
 }

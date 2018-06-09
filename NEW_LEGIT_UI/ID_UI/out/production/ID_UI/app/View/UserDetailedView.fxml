@@ -20,8 +20,8 @@
     </rowConstraints>
     <children>
         <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="150.0" prefWidth="300.0" text="" />
-        <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="150.0" prefWidth="300.0" text="" GridPane.columnIndex="1" />
-        <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="150.0" prefWidth="300.0" text="" GridPane.rowIndex="1" />
+        <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="150.0" prefWidth="300.0" text="sessions" GridPane.columnIndex="1" />
+        <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="150.0" prefWidth="300.0" text="functions" GridPane.rowIndex="1" />
         <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#showInfo" prefHeight="150.0" prefWidth="300.0" text="user info" GridPane.columnIndex="1" GridPane.rowIndex="1" />
         <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="150.0" prefWidth="300.0" text="add" GridPane.rowIndex="2" />
         <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#setReturnButton" prefHeight="150.0" prefWidth="300.0" text="return" GridPane.columnIndex="1" GridPane.rowIndex="2" />

@@ -1,6 +1,6 @@
-package Model;
+package app.Model;
 
-import DB.QueriesMachine;
+import app.DB.QueriesMachine;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -35,6 +35,10 @@ public class SelectContainer implements QueriesMachine.Selectable, Iterable<Obje
     @Override
     public Iterator<Object> iterator() {
         return objects.iterator();
+    }
+
+    public Object getAt(int position){
+        return objects.get(position);
     }
 
     public int getSize(){

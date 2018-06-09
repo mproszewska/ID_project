@@ -46,4 +46,8 @@ public class QueriesMachine {
     public List<Activity> getActivities(){
         return database.select("SELECT * FROM activities", Activity.class);
     }
+
+    public <T extends Selectable> List<T> select(String query, Class<T> cl){
+        return database.select(query, cl);
+    }
 }
