@@ -25,6 +25,7 @@ public class Main {
         Heartrate.generate(date, users, resolution);
         Sleeps.generate(date, 20);
         Sessions.generate(date, 20);
+        HeigthWeight.generate(date, 20, 70);
         reader.close();
     }
 }

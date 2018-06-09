@@ -41,6 +41,5 @@ public class Heartrate {
             }
             outRates.println("\\.");
         }
-
     }
 }
