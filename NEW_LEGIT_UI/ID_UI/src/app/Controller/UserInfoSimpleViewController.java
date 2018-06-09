@@ -53,11 +53,19 @@ public class UserInfoSimpleViewController implements Initializable {
                                 "WHERE name LIKE '" + Main.getUserName() + "' and surname like '" + Main.getUserSurname() + "'"
                         , SelectContainer.class);
 
+        java.util.List<SelectContainer> container2 = qMachine.select
+                ("SELECT * FROM get_heigth(" + container.get(0).getAt(0).toString() + ",current_date);"
+                        , SelectContainer.class);
+
+        java.util.List<SelectContainer> container3 = qMachine.select
+                ("SELECT * FROM get_weight(" + container.get(0).getAt(0).toString() + ",current_date);"
+                        , SelectContainer.class);
+
         textName.setText(container.get(0).getAt(1).toString());
         textSurname.setText(container.get(0).getAt(2).toString());
         textSex.setText(Objects.equals(container.get(0).getAt(3), "m") ?"Male" : "Female");
         textBirthday.setText(container.get(0).getAt(4).toString());
-        textHeight.setText(container.get(0).getAt(6).toString());
-        textWeight.setText(container.get(0).getAt(7).toString());
+        textHeight.setText(container2.get(0).getAt(0).toString());
+        textWeight.setText(container3.get(0).getAt(0).toString());
     }
 }

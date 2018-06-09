@@ -28,5 +28,10 @@ public class UserDetailedViewController {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("../View/UserInfoSimpleView.fxml"));
         Main.changeScene(actionEvent, loader, "UserInfoSimpleView");
     }
+
+    public void showFunctions(ActionEvent actionEvent) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("../View/UserFunctionsView.fxml"));
+        Main.changeScene(actionEvent, loader, "UserFunctionsView");
+    }
 }
 

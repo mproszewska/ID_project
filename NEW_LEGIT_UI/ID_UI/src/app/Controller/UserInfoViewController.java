@@ -39,7 +39,7 @@ public class UserInfoViewController {
         initialize();
         if(isAccesible) {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("../View/UserDetailedView.fxml"));
-            Main.changeScene(actionEvent, loader, "UserDetailedViewController");
+            Main.changeScene(actionEvent, loader, "UserDetailedView");
         } else {
             alert("ERROR!!! NO SUCH USER IN DATABASE.");
         }

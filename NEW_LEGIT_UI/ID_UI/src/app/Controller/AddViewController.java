@@ -47,9 +47,6 @@ public class AddViewController implements Initializable {
         String [] legit = new String[in.length];
         int it = 0;
         for(String x : in) {
-            if(x.endsWith(")")) {
-                legit[it] = x.substring(0, x.length() - 1);
-            }
             legit[it] = x.replaceAll("\\s+","");
             it++;
         }

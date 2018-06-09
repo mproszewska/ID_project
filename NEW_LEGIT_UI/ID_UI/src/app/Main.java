@@ -19,6 +19,9 @@ public class Main extends Application {
     static String password = "";
     static String URL = "";
 
+    static String [] args;
+    static String func;
+
     @Override
     public void start(Stage primaryStage) throws Exception{
         Parent root = FXMLLoader.load(getClass().getResource("View/Main.fxml"));
@@ -72,6 +75,22 @@ public class Main extends Application {
 
     public static String getURL() {
         return URL;
+    }
+
+    public static void changeArgs(String []in) {
+        args = in;
+    }
+
+    public static String [] getArgs() {
+        return args;
+    }
+
+    public static void changeFunc(String in) {
+        func = in;
+    }
+
+    public static String getFunc() {
+        return func;
     }
 
     public static boolean checkDBargs() {
