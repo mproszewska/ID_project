@@ -12,6 +12,7 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.ResourceBundle;
 
 /**
@@ -29,7 +30,20 @@ public class UsersInfoViewController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         QueriesMachine qMachine = new QueriesMachine();
-        java.util.List<User> users = qMachine.getUsers();
+        java.util.List<User> users = null;
+
+        try {
+            users = qMachine.getUsers();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+
         for(User u : users){
             listView.getItems().add(u.toString());
         }

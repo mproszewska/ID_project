@@ -32,7 +32,7 @@ public class UserFunctionsViewController implements Initializable {
     @FXML
     private Text textinfo;
 
-    private String choice;
+    private String choice = "";
 
     public void setReturnButton(ActionEvent actionEvent) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("../View/UserDetailedView.fxml"));
@@ -50,17 +50,25 @@ public class UserFunctionsViewController implements Initializable {
             it++;
         }
 
-        Main.changeArgs(legit);
-        if(choice.equals("get my med"))
-            Main.changeFunc("get_my_med");
+        if(!choice.equals("")) {
+            Main.changeArgs(legit);
+            if (choice.equals("medication per day")) {
+                Main.changeFunc("get_my_med");
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("../View/UserFunctionOutView.fxml"));
+                Main.changeScene(actionEvent, loader, "UserFunctionOutView");
+            }
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("../View/UserFunctionOutView.fxml"));
-        Main.changeScene(actionEvent,loader,"UserFunctionOutView");
+            if (choice.equals("heartrate per day")) {
+                Main.changeFunc("heartrate");
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("../View/UserFunctionChartView.fxml"));
+                Main.changeScene(actionEvent, loader, "UserFunctionChartView");
+            }
+        }
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        choiceBox.getItems().addAll("get my med");
+        choiceBox.getItems().addAll("medication per day", "heartrate per day");
 
         choiceBox.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
             @Override
@@ -69,7 +77,7 @@ public class UserFunctionsViewController implements Initializable {
 
                 textinfo.setText("Arguments:");
 
-                if(choice.equals("get my med")) {
+                if(choice.equals("medication per day") || choice.equals("heartrate per day")) {
                     text.setText("(date)");
                 }
             }

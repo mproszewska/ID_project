@@ -26,28 +26,28 @@ public class QueriesMachine {
         this.database = new PostgreSQLJDBC(database, username, password);
     }
 
-    public List<User> getUsers(){
+    public List<User> getUsers() throws ClassNotFoundException, SQLException, InstantiationException, IllegalAccessException {
         return database.select("SELECT * FROM users", User.class);
     }
 
-    public List<User> getUser(String name, String surname){
+    public List<User> getUser(String name, String surname) throws ClassNotFoundException, SQLException, InstantiationException, IllegalAccessException {
         String in = "SELECT * FROM users WHERE name LIKE '" + name + "' and surname like '" + surname + "'";
         return database.select(in, User.class);
     }
 
-    public void query(String query){
+    public void query(String query) throws SQLException, ClassNotFoundException {
         database.query(query);
     }
 
-    public void addUser(User user){
+    public void addUser(User user) throws SQLException, ClassNotFoundException {
         database.insert("users", user);
     }
 
-    public List<Activity> getActivities(){
+    public List<Activity> getActivities() throws ClassNotFoundException, SQLException, InstantiationException, IllegalAccessException {
         return database.select("SELECT * FROM activities", Activity.class);
     }
 
-    public <T extends Selectable> List<T> select(String query, Class<T> cl){
+    public <T extends Selectable> List<T> select(String query, Class<T> cl) throws ClassNotFoundException, SQLException, InstantiationException, IllegalAccessException {
         return database.select(query, cl);
     }
 }

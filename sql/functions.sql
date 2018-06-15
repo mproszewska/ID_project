@@ -60,6 +60,9 @@ BEGIN
            FROM users
            WHERE user_id = userid);
   weight_0 = get_weight(userid, start_0::DATE);
+	if weight_0 isnull then
+		return 10000;
+	end if;
   seconds = (SELECT EXTRACT(EPOCH FROM (end_0 - start_0)));
   lasttime = start_0;
   heartrates_0 = 0;

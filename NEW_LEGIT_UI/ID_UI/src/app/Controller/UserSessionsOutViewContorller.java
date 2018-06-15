@@ -3,23 +3,22 @@ package app.Controller;
 import app.DB.QueriesMachine;
 import app.Main;
 import app.Model.SelectContainer;
-import app.Model.User;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
 import javafx.scene.control.ListView;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.ResourceBundle;
 
 /**
- * Created by piotrhelm on 09.06.18.
+ * Created by piotrhelm on 10.06.18.
  */
-public class UserFunctionOutViewController implements Initializable {
+public class UserSessionsOutViewContorller implements Initializable{
     @FXML
     private ListView listView;
 
@@ -31,19 +30,21 @@ public class UserFunctionOutViewController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         QueriesMachine qMachine = new QueriesMachine();
-        if(Main.getFunc().equals("get_my_med")) {
-            List<SelectContainer> container = null;
-            String query = "SELECT * FROM " + Main.getFunc() + "(" + Main.getUser().getUserId() + ",'" + Main.getArgs()[0] + "');";
+        if(Main.getFunc().equals("kcal_during_session")) {
+            String query = "SELECT * FROM " + Main.getFunc() + "(" + Main.getUser().getUserId() + "," + Main.getContainer().getAt(0) + ");";
             System.out.println(query);
+            List<SelectContainer> container = null;
+
             try {
-                 container = qMachine.select(query, SelectContainer.class);
-            } catch (Throwable e) {
-                System.out.println(e);
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Connection Error");
-                alert.setHeaderText("Results:");
-                alert.setContentText("Invalid data. Try again.");
-                alert.showAndWait();
+                container = qMachine.select(query, SelectContainer.class);
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            } catch (InstantiationException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
             }
 
             for (SelectContainer tmp : container) {

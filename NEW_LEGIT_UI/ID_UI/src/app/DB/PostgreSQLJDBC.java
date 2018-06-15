@@ -2,10 +2,7 @@ package app.DB;
 
 import app.Main;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +17,7 @@ public class PostgreSQLJDBC {
 
     private String database = "jdbc:postgresql://localhost:5432/piotrhelm";
     private String username = "piotrhelm";
-    private String password = "12051997Ph";
+    private String password = Main.getPassword();
 
     PostgreSQLJDBC(String database, String username, String password){
         this.database = database;
@@ -30,7 +27,7 @@ public class PostgreSQLJDBC {
 
     PostgreSQLJDBC(){}
 
-    private void insert(String table, String signature, Object... objects) {
+    private void insert(String table, String signature, Object... objects) throws SQLException, ClassNotFoundException {
         Connection c = null;
         Statement stmt = null;
         try {
@@ -53,12 +50,12 @@ public class PostgreSQLJDBC {
             c.close();
         } catch (Exception e) {
             System.err.println( e.getClass().getName()+": "+ e.getMessage() );
-            System.exit(0);
+            throw e;
         }
         System.out.println("Records created successfully");
     }
 
-    void insert(String table, QueriesMachine.Insertable obj) {
+    void insert(String table, QueriesMachine.Insertable obj) throws SQLException, ClassNotFoundException {
         StringBuilder str = new StringBuilder();
         str.append("(");
         for (String signs : obj.getMySignature())
@@ -68,7 +65,7 @@ public class PostgreSQLJDBC {
         insert(table, str.toString(), obj.getMyValues());
     }
 
-    void query(String query){
+    void query(String query) throws SQLException, ClassNotFoundException {
         Connection c = null;
         Statement stmt = null;
         try {
@@ -84,12 +81,12 @@ public class PostgreSQLJDBC {
             c.close();
         } catch ( Exception e ) {
             System.err.println( e.getClass().getName()+": "+ e.getMessage() );
-            System.exit(0);
+            throw e;
         }
         System.out.println("Operation done successfully");
     }
 
-    <T extends QueriesMachine.Selectable> List<T> select(String query, Class<T> cl) {
+    <T extends QueriesMachine.Selectable> List<T> select(String query, Class<T> cl) throws ClassNotFoundException, SQLException, InstantiationException, IllegalAccessException {
         Connection c = null;
         Statement stmt = null;
         List<T> list = new ArrayList<>();
@@ -110,7 +107,7 @@ public class PostgreSQLJDBC {
             c.close();
         } catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
-            System.exit(0);
+            throw e;
         }
         System.out.println("Operation done successfully");
         return list;

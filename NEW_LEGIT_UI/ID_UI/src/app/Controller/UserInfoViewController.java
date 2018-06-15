@@ -2,6 +2,7 @@ package app.Controller;
 
 import app.DB.QueriesMachine;
 import app.Main;
+import app.Model.StringFormatMachine;
 import app.Model.User;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -12,6 +13,7 @@ import javafx.scene.text.Text;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -33,9 +35,7 @@ public class UserInfoViewController {
     }
 
     @FXML
-    private void handleApply(ActionEvent actionEvent) throws IOException {
-        Main.changeName(textFieldName.getText());
-        Main.changeSurname(textFieldSurname.getText());
+    private void handleApply(ActionEvent actionEvent) throws IOException, ClassNotFoundException, SQLException, InstantiationException, IllegalAccessException {
         initialize();
         if(isAccesible) {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("../View/UserDetailedView.fxml"));
@@ -45,12 +45,15 @@ public class UserInfoViewController {
         }
     }
 
-    public void initialize() {
-        if(!Main.getUserName().equals("") && !Main.getUserSurname().equals("")) {
+    public void initialize() throws ClassNotFoundException, SQLException, InstantiationException, IllegalAccessException {
+        if(Main.getUser() == null) {
             QueriesMachine qMachine = new QueriesMachine();
-            List<User> users = qMachine.getUser(Main.getUserName(), Main.getUserSurname());
-            if(users.size() != 0)
+            StringFormatMachine fMachine = new StringFormatMachine();
+            List<User> users = qMachine.getUser(fMachine.format(textFieldName.getText()),fMachine.format(textFieldSurname.getText()));
+            if(users.size() != 0) {
                 isAccesible = true;
+                Main.setUser(users.get(0));
+            }
         }
     }
 

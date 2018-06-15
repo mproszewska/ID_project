@@ -6,7 +6,7 @@ import app.Model.User;
 import java.util.List;
 
 public class Test {
-    public static void main(String... arg){
+    /*public static void main(String... arg){
         QueriesMachine machine = new QueriesMachine();
         System.out.println(machine.getUsers());
 //        System.out.println(machine.getUser("Dzwonisław", "Krzakiel"));
@@ -20,5 +20,5 @@ public class Test {
         machine.query(
                 "INSERT INTO users (name, surname, sex, birthday) VALUES ('Piotr_I', 'Kask_Zdobywca', 'm', 'Mon Jul 11 00:04:00 CET 7');"
         );
-    }
+    }*/
 }
