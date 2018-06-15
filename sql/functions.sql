@@ -5,7 +5,7 @@ CREATE OR REPLACE FUNCTION get_weight(userid INTEGER, day DATE)
   RETURNS NUMERIC(3) AS
 $$
 SELECT
-  weight
+ weight
 FROM height_weight
 WHERE weight IS NOT NULL AND user_id = userid AND date <= day
 ORDER BY date DESC
@@ -93,14 +93,29 @@ BEGIN
   THEN RETURN ROUND(
       ((age_0 * 0.2017) - (weight_0 * 0.09036) + (avg_heartrate_0 * 0.6309) - 55.0969) * (seconds / 60) / 4.184, 2);
   ELSE RETURN ROUND(
-      ((age_0 * 0.074) - (weight_0 * 0.05741) + (avg_heartrate_0 * 0.4472) - 20.4022) * (seconds / 60) / 4.184,
+      ((age_0 * 0.074) - (weight_0  * 0.05741) + (avg_heartrate_0 * 0.4472) - 20.4022) * (seconds / 60) / 4.184,
       2); END IF;
 
 END;
 $$
 LANGUAGE plpgsql;
 
+----
+CREATE OR REPLACE FUNCTION max_heartrate(age NUMERIC)
+	RETURNS NUMERIC AS $$
+BEGIN
+RETURN 211-(age*0.64);
+END;
+$$
+LANGUAGE plpgsql;
 
+CREATE OR REPLACE FUNCTION min_heartrate(age NUMERIC)
+	RETURNS NUMERIC AS $$
+BEGIN
+RETURN max_heartrate(age)*0.4;
+END;
+$$
+LANGUAGE plpgsql;
 ----
 CREATE OR REPLACE FUNCTION bmi(user_id_0 INTEGER, date_0 DATE)
   RETURNS NUMERIC AS $$
@@ -110,15 +125,35 @@ DECLARE
 
 BEGIN
   IF date_0 IS NULL
-  THEN date_0 = CURRENT_DATE; END IF;
+  	THEN date_0 = CURRENT_DATE; END IF;
   weight_0 = get_weight(user_id_0, date_0);
   height_0 = get_heigth(user_id_0, date_0) / 100;
+  IF height_0 IS NULL OR weight_0 IS NULL 
+	THEN RAISE NOTICE 'NO DATA PROVIDED'; 
+	RETURN NULL; END IF; 
   RETURN ROUND(weight_0 / (height_0 * height_0), 2);
 END;
 $$
 LANGUAGE plpgsql;
 
+----
+CREATE OR REPLACE FUNCTION bmi_description(bmi NUMERIC)
+  RETURNS VARCHAR AS $$
+DECLARE
 
+BEGIN
+	IF bmi<15 THEN RETURN 'very severely underweight';
+ 	ELSIF bmi<16 THEN RETURN 'severely underweight';
+	ELSIF bmi<18.5 THEN RETURN 'underweight';
+	ELSIF bmi<25 THEN RETURN 'normal';
+	ELSIF bmi<30 THEN RETURN 'obese class I';
+	ELSIF bmi<35 THEN RETURN 'obese class II';
+	ELSIF bmi<40 THEN RETURN 'obese class III';
+	ELSIF bmi<45 THEN RETURN 'obese class IV';
+	ELSE RETURN 'obese class V'; END IF;
+END;
+$$
+LANGUAGE plpgsql;
 ----
 CREATE OR REPLACE FUNCTION height_weight_changes()
   RETURNS TABLE(user_id INTEGER, start_time TIMESTAMP, end_time TIMESTAMP, hight_change NUMERIC, weight_change NUMERIC) AS
@@ -171,7 +206,7 @@ CREATE OR REPLACE VIEW user_min_max_heartrate(user_id, min, max)
 
 
 ----
-drop FUNCTION IF EXISTS heartrate_session_type(INTEGER, INTEGER);
+DROP FUNCTION IF EXISTS heartrate_session_type(INTEGER, INTEGER);
 CREATE OR REPLACE FUNCTION heartrate_session_type(user_idd INTEGER, session_idd INTEGER)
   RETURNS VARCHAR AS
 $$
@@ -213,11 +248,12 @@ $$
 LANGUAGE plpgsql;
 
 ----
+DROP FUNCTION IF EXISTS timetable(INTEGER,DATE) CASCADE;
 CREATE OR REPLACE FUNCTION timetable(user_idd INTEGER, day DATE)
   RETURNS TABLE(session_id INTEGER, name VARCHAR, start_time TIMESTAMP, end_time TIMESTAMP, distance NUMERIC, description VARCHAR) AS
 $$
 SELECT
-  name, s.session_id, s.start_time, s.end_time, distance, description
+   s.session_id, name, s.start_time, s.end_time, distance, description
 FROM user_session us
   JOIN sessions s ON us.session_id = s.session_id
   JOIN activities a ON s.activity_id = a.activity_id
@@ -227,6 +263,7 @@ LANGUAGE sql;
 
 
 ----
+DROP FUNCTION IF EXISTS get_my_med(INTEGER,DATE) CASCADE;
 CREATE OR REPLACE FUNCTION get_my_med(id INTEGER, day DATE)
   RETURNS CHARACTER VARYING[] AS
 $$
@@ -255,7 +292,7 @@ CREATE OR REPLACE VIEW activities_meds
       JOIN activities a ON s.activity_id = a.activity_id;
 
 ----
-DROP FUNCTION IF EXISTS get_best_stuff(INTEGER);
+DROP FUNCTION IF EXISTS get_best_stuff(INTEGER) CASCADE;
 CREATE OR REPLACE FUNCTION get_best_stuff(act_id INTEGER)
   RETURNS TABLE(medications CHARACTER VARYING[],avg_result NUMERIC) AS
 $$
@@ -279,6 +316,7 @@ CREATE VIEW best_medication_sets(activity, medication_set, result) AS
 
 
 ------------TODO
+DROP FUNCTION IF EXISTS section_timesheet(INTEGER,DATE,DATE) CASCADE;
 CREATE OR REPLACE FUNCTION section_timesheet(section_id INTEGER, fist DATE, last DATE)
   RETURNS TABLE("date" DATE, present BOOL) AS $$
 BEGIN
