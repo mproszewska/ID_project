@@ -10,7 +10,7 @@ IF NEW.start_time<u_birthday
 	RETURN NULL; END IF;
 
 IF  time_interval_check(NEW.user_id,NEW.start_time,NEW.end_time,
-	'user_session left join sessions using (session_id)') IS false 
+	'user_session LEFT JOIN sessions USING (session_id)') IS false 
 		THEN RAISE NOTICE 'USER DURING SESSION';
 		RETURN NULL; END IF;
 
@@ -40,7 +40,7 @@ IF t1<u_birthday
 	RETURN NULL; END IF;
 
 IF  time_interval_check(NEW.user_id,t1,t2,'user_session LEFT JOIN sessions USING (session_id)') IS false 
-	THEN RAISE NOTICE 'USER DURIN SESSION'; 
+	THEN RAISE NOTICE 'USER DURING SESSION'; 
 	RETURN NULL; END IF;
 
 IF  time_interval_check(NEW.user_id,t1,t2,'sleep') IS false 
@@ -107,7 +107,7 @@ CREATE OR REPLACE FUNCTION height_weight_check() RETURNS TRIGGER AS $f$
 DECLARE
 u_age NUMERIC;
 u_sex CHAR(1);
-
+max_height NUMERIC;
 BEGIN
 u_age = (SELECT DATE_PART('year',NEW."date"::DATE)-DATE_PART('year',(SELECT birthday FROM users WHERE user_id=NEW.user_id)::DATE));
 u_sex = (SELECT sex FROM users WHERE user_id=NEW.user_id);
@@ -118,8 +118,12 @@ IF u_sex = 'm' AND (u_age*0.2017)-(NEW.weight *0.09036)+min_heartrate(u_age)-55.
 IF u_sex = 'k' AND (u_age*0.074)-(NEW.weight *0.05741)+min_heartrate(u_age)-20.4022<=0
 	THEN RAISE NOTICE 'WRONG WEIGHT TO AGE RATIO';
 	RETURN NULL; END IF;
-IF (NEW.weight*100000)/(NEW.height*NEW.height) not between 10 and 50
+IF (NEW.weight*10000)/(NEW.height*NEW.height) not between 10 and 50
 	THEN RAISE NOTICE 'WRONG HEIGHT TO WEIGHT RATIO';
+	RETURN NULL; END IF;
+max_height = (SELECT MAX(height) FROM height_weight WHERE user_id=NEW.user_id);
+if max_height IS NOT NULL AND (NEW.height-max_height<(-3))
+	THEN RAISE NOTICE 'TOO SHORT';
 	RETURN NULL; END IF;
 RETURN NEW;
 END;
@@ -158,23 +162,28 @@ $f$ LANGUAGE plpgsql;
 CREATE OR REPLACE FUNCTION sections_check() RETURNS TRIGGER AS $f$
 declare
 members NUMERIC;
+t DATE;
 BEGIN
+
 IF (SELECT sport FROM  activities a WHERE a.activity_id=NEW.activity_id) IS false 
 	THEN RAISE NOTICE 'IS NOT SPORT'; 
 	RETURN NULL; END IF;
 
-members = (SELECT count(user_id) FROM user_section WHERE section_id=NEW.section_id AND COALESCE(end_time,CURRENT_DATE)=CURRENT_DATE);
-IF members < COALESCE(NEW.min_members,members) OR 
-
-	members>COALESCE(NEW.max_members,members)
-		THEN RAISE NOTICE 'WRONG NUMBER OF MEMBERS'; 
-		RETURN NULL; END IF;
+FOR t IN SELECT start_time FROM user_section WHERE section_id=NEW.section_id UNION SELECT COALESCE(end_time,CURRENT_DATE) FROM user_section WHERE section_id=NEW.section_id
+	LOOP
+	members = (SELECT count(user_id) FROM user_section WHERE section_id=NEW.section_id AND COALESCE(end_time,t)>=t AND start_time<=t);
+	IF members < COALESCE(NEW.min_members,members) OR 
+		members>COALESCE(NEW.max_members,members)
+			THEN RAISE NOTICE 'WRONG NUMBER OF MEMBERS'; 
+			RETURN NULL; 
+	END IF;
+	END LOOP;
 
 IF NEW.min_age IS NOT NULL 
 	AND
 	(SELECT user_id 
 		FROM user_section left join users USING (user_id) 
-		WHERE section_id=NEW.section_id AND COALESCE(end_time,CURRENT_DATE)=CURRENT_DATE  
+		WHERE section_id=NEW.section_id 
 			AND (DATE_PART('year',CURRENT_DATE::DATE)-DATE_PART('year',birthday::DATE))>NEW.max_age) 
 	IS NOT NULL 
 		THEN RAISE NOTICE 'WRONG MIN AGE'; 
@@ -183,7 +192,7 @@ IF NEW.min_age IS NOT NULL
 IF NEW.max_age IS NOT NULL 
 	AND 
 	(SELECT user_id FROM user_section left join users USING (user_id) 
-		WHERE section_id=NEW.section_id AND COALESCE(end_time,CURRENT_DATE)=CURRENT_DATE 
+		WHERE section_id=NEW.section_id 
 			AND DATE_PART('year',CURRENT_DATE::date)-DATE_PART('year',birthday::date)<NEW.min_age) 
 	IS NOT NULL 
 		THEN RAISE NOTICE 'WRONG MAX AGE'; 
@@ -192,7 +201,7 @@ IF NEW.max_age IS NOT NULL
 IF NEW.sex IS NOT NULL 
 	AND 
 	(SELECT user_id FROM user_section LEFT JOIN users u USING (user_id) 
-		WHERE section_id=NEW.section_id AND COALESCE(end_time,CURRENT_DATE)=CURRENT_DATE AND u.sex != NEW.sex) 
+		WHERE section_id=NEW.section_id AND u.sex != NEW.sex) 
 	IS NOT NULL 
 		THEN RAISE NOTICE 'WRONG SEX'; 
 		RETURN NULL; END IF;
@@ -209,8 +218,10 @@ maxage NUMERIC;
 age NUMERIC;
 minmem  NUMERIC;
 maxmem numeric;
+t DATE;
 u_birthday DATE;
 u_sex CHAR;
+members NUMERIC;
 BEGIN
 minage = (SELECT min_age FROM sections WHERE section_id=NEW.section_id);
 maxage = (SELECT max_age FROM sections WHERE section_id=NEW.section_id);
@@ -226,8 +237,8 @@ IF NEW.start_time<u_birthday
 
 IF (SELECT user_id 
 	FROM user_section 
-	WHERE user_id=NEW.user_id AND section_id=NEW.section_id AND COALESCE(end_time,CURRENT_DATE)=CURRENT_DATE) 
-is not NULL 		
+	WHERE user_id=NEW.user_id AND section_id=NEW.section_id AND COALESCE(end_time,NEW.start_time+INTERVAL '1 day')>NEW.start_time AND start_time<COALESCE(NEW.end_time,start_time+INTERVAL '1 day')) 
+IS NOT NULL 		
 	THEN RAISE NOTICE 'USER ALREADY IN THAT SECTION'; 
 	RETURN NULL; END IF;
 
@@ -239,11 +250,30 @@ IF age<minage OR age>maxage
 	THEN RAISE NOTICE 'WRONG AGE'; 
 	RETURN NULL;END IF;
 
-IF(SELECT count(*) FROM user_section WHERE section_id=OLD.section_id AND COALESCE(end_time,CURRENT_DATE)=CURRENT_DATE)<=minmem 
-	THEN  RAISE NOTICE 'WRONG NUMBER OF MEMBERS IN OLD SECTION'; RETURN NULL; END IF;
 
-IF(SELECT count(*) FROM user_section WHERE section_id=NEW.section_id AND COALESCE(end_time,CURRENT_DATE)=CURRENT_DATE)>=maxmem 
-	THEN RAISE NOTICE 'WRONG NUMBER OF MEMBERS IN NEW SECTION'; RETURN NULL; END IF;
+	minmem = (SELECT min_members FROM sections WHERE section_id=NEW.section_id);
+	maxmem = (SELECT max_members FROM sections WHERE section_id=NEW.section_id);
+	FOR t IN SELECT start_time FROM user_section WHERE section_id=NEW.section_id UNION SELECT COALESCE(end_time,CURRENT_DATE) FROM user_section WHERE section_id=NEW.section_id
+		LOOP
+		members = (SELECT COALESCE(COUNT(user_id),0) FROM user_section WHERE section_id=NEW.section_id AND COALESCE(end_time,t)>=t AND start_time<=t);
+		IF members < COALESCE(minmem,members) OR 
+			members>=COALESCE(maxmem,members+1)
+				THEN RAISE NOTICE 'WRONG NUMBER OF MEMBERS IN NEW SECTION'; 
+				RETURN NULL; END IF;
+		END LOOP;
+	IF TG_OP = 'UPDATE' AND OLD.section_id IS NOT NULL THEN
+		minmem = (SELECT min_members FROM sections WHERE section_id=OLD.section_id);
+		maxmem = (SELECT max_members FROM sections WHERE section_id=OLD.section_id);
+		FOR t IN SELECT start_time FROM user_section WHERE section_id=OLD.section_id UNION SELECT COALESCE(end_time,CURRENT_DATE) FROM user_section WHERE section_id=OLD.section_id
+		LOOP
+		members = (SELECT COALESCE(COUNT(user_id),0) FROM user_section WHERE section_id=OLD.section_id AND COALESCE(end_time,t)>=t AND start_time<=t);
+		IF members <= COALESCE(minmem,members-1) OR 
+			members>COALESCE(maxmem,members)
+				THEN RAISE NOTICE 'WRONG NUMBER OF MEMBERS IN OLD SECTION'; 
+				RETURN NULL; END IF;
+		END LOOP;
+	END IF;	
+
 
 RETURN NEW;
 END;

@@ -170,7 +170,7 @@ CREATE TABLE user_section (
 	CONSTRAINT fk_people_sections FOREIGN KEY ( section_id ) REFERENCES sections( section_id ) ON DELETE CASCADE
  );
 
-ALTER TABLE user_section ADD CONSTRAINT cns_user_section CHECK ( start_time<end_time AND coalesce(end_time,CURRENT_DATE)<=CURRENT_DATE);
+ALTER TABLE user_section ADD CONSTRAINT cns_user_section CHECK ( start_time<end_time);
 
 CREATE INDEX idx_people_user_id ON user_section ( user_id );
 

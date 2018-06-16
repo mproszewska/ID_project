@@ -60,9 +60,6 @@ BEGIN
            FROM users
            WHERE user_id = userid);
   weight_0 = get_weight(userid, start_0::DATE);
-	if weight_0 isnull then
-		return 10000;
-	end if;
   seconds = (SELECT EXTRACT(EPOCH FROM (end_0 - start_0)));
   lasttime = start_0;
   heartrates_0 = 0;
@@ -115,7 +112,7 @@ LANGUAGE plpgsql;
 CREATE OR REPLACE FUNCTION min_heartrate(age NUMERIC)
 	RETURNS NUMERIC AS $$
 BEGIN
-RETURN max_heartrate(age)*0.4;
+RETURN max_heartrate(age)*0.3;
 END;
 $$
 LANGUAGE plpgsql;
@@ -360,12 +357,10 @@ BEGIN
        SELECT t.user_id
        FROM (SELECT *
              FROM get_table(tab)) t
-       WHERE t.user_id = id AND (
-         (t.start_time >= start AND t.start_time < endd) OR
-         (t.end_time > start AND t.end_time <= endd) OR
-         (start >= t.start_time AND start < t.end_time) OR
-         (endd > t.start_time AND endd <= t.end_time)
-       )
+       WHERE t.user_id = id AND 
+         t.start_time < endd AND t.end_time>start
+	ORDER BY 1 LIMIT 1
+       
      ) IS NOT NULL
   THEN RETURN FALSE; END IF;
 
