@@ -71,17 +71,17 @@ seconds INTEGER;
 last_date TIMESTAMP;
 BEGIN
 u_birthday = (SELECT birthday FROM users WHERE user_id=NEW.user_id);
-age = DATE_PART('year',NEW.start_time::DATE)-DATE_PART('year',u_birthday::DATE);
+age = get_age(NEW.user_id,NEW.start_time);
 
-IF( age < 18 ) THEN age = 18; END if;
-IF (age > 89 ) THEN age = 89; END if;
+IF( age < 18 ) THEN age = 18; RAISE NOTICE 'CALUCULATIONS MIGHT BE INACURATE BECAUSE OF AGE';END if;
+IF (age > 89 ) THEN age = 89; RAISE NOTICE 'CALUCULATIONS MIGHT BE INACURATE BECAUSE OF AGE';END if;
 
 IF NEW.avg_heartrate>max_heartrate(age) 
-	THEN RAISE NOTICE 'TO HIGH HEARTRATE'; 
+	THEN RAISE NOTICE 'TOO HIGH HEARTRATE'; 
 	RETURN NULL; END IF;
 
 IF NEW.avg_heartrate<min_heartrate(age)
-	THEN RAISE NOTICE 'TO LOW HEARTRATE'; 
+	THEN RAISE NOTICE 'TOO LOW HEARTRATE'; 
 	RETURN NULL; END IF;
 
 IF NEW.start_time<u_birthday
@@ -92,11 +92,14 @@ IF  time_interval_check(NEW.user_id,NEW.start_time,NEW.end_time,'heartrates') IS
 	THEN  RAISE NOTICE 'ALREADY MEASURED'; 
 	RETURN NULL; END IF;
 
+IF get_age(NEW.user_id,NEW.start_time)!=get_age(NEW.user_id,NEW.end_time) THEN RAISE NOTICE 'CALUCULATIONS MIGHT BE INACURATE BECAUSE OF AGE CHANGE';END if;
+IF get_weight(NEW.user_id,NEW.start_time)!=get_weight(NEW.user_id,NEW.end_time) THEN RAISE NOTICE 'CALUCULATIONS MIGHT BE INACURATE BECAUSE OF WIGHT';END if;
+
 last_heartrate = (SELECT avg_heartrate FROM heartrates WHERE user_id = NEW.user_id AND start_time<NEW.start_time ORDER BY start_time DESC LIMIT 1);
-last_date = (SELECT start_time FROM heartrates WHERE user_id = NEW.user_id AND start_time<NEW."start_time" ORDER BY start_time DESC LIMIT 1);
+last_date = (SELECT end_time FROM heartrates WHERE user_id = NEW.user_id AND start_time<NEW."start_time" ORDER BY start_time DESC LIMIT 1);
 IF last_date IS NULL  THEN RETURN NEW; END if;
 seconds  = (SELECT EXTRACT(EPOCH FROM (NEW.start_time - last_date)));
-IF ABS(last_heartrate-NEW.avg_heartrate)>seconds*5 
+IF ABS(last_heartrate-NEW.avg_heartrate)>(seconds+1)*5 
 	THEN RAISE NOTICE 'TOO BIG HEARTRATE CHANGE'; 
 	RETURN NULL; END IF;
 RETURN NEW;
@@ -110,7 +113,7 @@ u_sex CHAR(1);
 max_height NUMERIC;
 min_height NUMERIC;
 BEGIN
-u_age = (SELECT DATE_PART('year',NEW."date"::DATE)-DATE_PART('year',(SELECT birthday FROM users WHERE user_id=NEW.user_id)::DATE));
+u_age = get_age(NEW.user_id,NEW."date");
 u_sex = (SELECT sex FROM users WHERE user_id=NEW.user_id);
 
 IF u_sex = 'm' AND (u_age*0.2017)-(NEW.weight *0.09036)+min_heartrate(u_age)-55.0969<=0 
@@ -123,11 +126,11 @@ IF (NEW.weight*10000)/(NEW.height*NEW.height) not between 10 and 50
 	THEN RAISE NOTICE 'WRONG HEIGHT TO WEIGHT RATIO';
 	RETURN NULL; END IF;
 max_height = (SELECT MAX(height) FROM height_weight WHERE user_id=NEW.user_id AND "date"<NEW."date");
-if max_height IS NOT NULL AND (max_height-3>NEW.height)
+if max_height IS NOT NULL AND (max_height>NEW.height)
 	THEN RAISE NOTICE 'TOO SHORT';
 	RETURN NULL; END IF;
 min_height = (SELECT MIN(height) FROM height_weight WHERE user_id=NEW.user_id AND "date">NEW."date");
-if min_height IS NOT NULL AND (min_height+3<NEW.height)
+if min_height IS NOT NULL AND (min_height<NEW.height)
 	THEN RAISE NOTICE 'TOO HIGH';
 	RETURN NULL; END IF;
 RETURN NEW;
@@ -143,7 +146,7 @@ IF NEW."date"<u_birthday
 	THEN RAISE NOTICE 'USER IS NOT BORN'; 
 	RETURN NULL; END IF;
 
-IF NEW.accident_id IS NOT NULL AND (SELECT "date" FROM accidents WHERE accident_id = NEW.accident_id) != NEW."date" 
+IF NEW.accident_id IS NOT NULL AND (SELECT "date"::date FROM accidents WHERE accident_id = NEW.accident_id) != NEW."date" 
 	THEN RAISE NOTICE 'WRONG DATE'; 
 	RETURN NULL; END IF;
 
@@ -189,7 +192,7 @@ IF NEW.min_age IS NOT NULL
 	(SELECT user_id 
 		FROM user_section left join users USING (user_id) 
 		WHERE section_id=NEW.section_id 
-			AND (DATE_PART('year',start_time)-DATE_PART('year',birthday::DATE))>NEW.max_age) 
+			AND get_age(user_id,start_time)<NEW.min_age ORDER BY 1 LIMIT 1) 
 	IS NOT NULL 
 		THEN RAISE NOTICE 'WRONG MIN AGE'; 
 		RETURN NULL; END IF;
@@ -198,7 +201,7 @@ IF NEW.max_age IS NOT NULL
 	AND 
 	(SELECT user_id FROM user_section left join users USING (user_id) 
 		WHERE section_id=NEW.section_id 
-			AND DATE_PART('year',end_time)-DATE_PART('year',birthday::date)<NEW.min_age) 
+			AND get_age(user_id,end_time)>NEW.max_age ORDER BY 1 LIMIT 1) 
 	IS NOT NULL 
 		THEN RAISE NOTICE 'WRONG MAX AGE'; 
 		RETURN NULL; END IF;
@@ -234,7 +237,6 @@ minmem = (SELECT min_members FROM sections WHERE section_id=NEW.section_id);
 maxmem = (SELECT max_members FROM sections WHERE section_id=NEW.section_id);
 u_birthday = (SELECT birthday FROM users WHERE user_id=NEW.user_id);
 u_sex = (SELECT sex FROM users WHERE user_id=NEW.user_id);
-age = DATE_PART('year',CURRENT_DATE::DATE)-DATE_PART('year',u_birthday::DATE);
 
 IF NEW.start_time<u_birthday
 	THEN RAISE NOTICE 'USER IS NOT BORN YET'; 	
@@ -251,10 +253,17 @@ IF(SELECT COALESCE(sex,u_sex) FROM sections WHERE section_id=NEW.section_id) != 
 	THEN RAISE NOTICE 'WRONG SEX'; 
 	RETURN NULL; END IF;
 
-IF age<minage OR age>maxage 
-	THEN RAISE NOTICE 'WRONG AGE'; 
+IF minage IS NOT NULL AND get_age(NEW.user_id,NEW.start_time)<minage 
+	THEN RAISE NOTICE 'WRONG MINIMAL AGE'; 
 	RETURN NULL;END IF;
 
+IF  maxage IS NOT NULL AND NEW.end_time IS NOT NULL AND get_age(NEW.user_id,NEW.end_time)>maxage 
+	THEN RAISE NOTICE 'WRONG MAXIMAL AGE'; 
+	RETURN NULL;END IF;
+
+IF  maxage IS NOT NULL AND NEW.end_time IS NULL
+	THEN RAISE NOTICE 'WRONG MAXIMAL AGE'; 
+	RETURN NULL;END IF;
 
 	minmem = (SELECT min_members FROM sections WHERE section_id=NEW.section_id);
 	maxmem = (SELECT max_members FROM sections WHERE section_id=NEW.section_id);

@@ -55,8 +55,8 @@ CREATE INDEX idx_heartrates_user_session_id ON heartrates ( user_id );
 DROP TABLE IF EXISTS height_weight CASCADE;
 CREATE TABLE height_weight ( 
 	user_id              INTEGER  NOT NULL,
-	height               NUMERIC(3)  ,
-	weight               NUMERIC(3)  ,
+	height               NUMERIC(3)  NOT NULL,
+	weight               NUMERIC(3) NOT NULL ,
 	"date"               TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
 	CONSTRAINT uq_height_weight_0 UNIQUE ( user_id,"date" ) ,
 	CONSTRAINT fk_height_weight_users FOREIGN KEY ( user_id ) REFERENCES users( user_id )  ON DELETE CASCADE
@@ -64,7 +64,7 @@ CREATE TABLE height_weight (
 
 ALTER TABLE height_weight ADD CONSTRAINT cns_height_weight CHECK ( "date" <= CURRENT_TIMESTAMP );
 
-ALTER TABLE height_weight ADD CONSTRAINT cns_height_weight_0 CHECK ( (height is not NULL OR weight is not NULL) AND (weight is not NULL OR weight > 0) AND  ( height is NULL OR height > 0));
+ALTER TABLE height_weight ADD CONSTRAINT cns_height_weight_0 CHECK ( weight > 0 AND  height>0);
 
 CREATE INDEX idx_height_weight_user_id ON height_weight ( user_id );
 
