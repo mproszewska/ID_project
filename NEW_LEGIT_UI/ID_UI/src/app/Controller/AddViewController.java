@@ -2,6 +2,8 @@ package app.Controller;
 
 import app.DB.QueriesMachine;
 import app.Main;
+import app.Model.Alerts;
+import app.Model.FXMLMachine;
 import app.Model.SelectContainer;
 import app.Model.StringFormatMachine;
 import javafx.beans.value.ChangeListener;
@@ -17,11 +19,11 @@ import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 
 /**
  * Created by piotrhelm on 04.06.18.
@@ -64,94 +66,113 @@ public class AddViewController implements Initializable {
 
     public void setReturnButton(ActionEvent actionEvent) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("../View/Main.fxml"));
-        Main.changeScene(actionEvent,loader,"Main");
+        Main.changeScene(actionEvent, loader, "Main");
     }
 
     @FXML
     private void handleApply(ActionEvent actionEvent) throws IOException, SQLException, ClassNotFoundException {
         QueriesMachine qMachine = new QueriesMachine();
         StringFormatMachine fMachine = new StringFormatMachine();
+        TextField[] fields = {textF11, textF12, textF13, textF21, textF22, textF23, textF24};
+        boolean success = false;
 
-        if(choice.equals("session")) {
-            if(!textF11.getText().equals("") && !textF12.getText().equals("") && !textF13.getText().equals("")
-                    && !textF21.getText().equals("") && !textF22.getText().equals("")) {
-                List<SelectContainer> container = null;
-                String query = "SELECT activity_id FROM activities WHERE name LIKE '" + textF13.getText() + "';";
-                System.out.println(query);
+        if (choice == null) {
+            Alerts.alertCustom("Input Error","Results:","Choose what you want to add.");
+        } else if (choice.equals("session") && FXMLMachine.checkContent(fields, 5)) {
+            List<SelectContainer> container = null;
+            String query = "SELECT activity_id FROM activities WHERE name LIKE '" + textF13.getText() + "';";
+            System.out.println(query);
 
-                try {
-                    container = qMachine.select(query, SelectContainer.class);
-                } catch (Throwable e) {
-                    alert();
-                }
+            try {
+                container = qMachine.select(query, SelectContainer.class);
+            } catch (Throwable e) {
+                Alerts.alert();
+            }
 
-                List<SelectContainer> container2 = null;
-                String query2 = "SELECT user_id FROM users WHERE name LIKE '"
-                        + fMachine.format(textF11.getText()) + "' AND surname LIKE '"
-                        + fMachine.format(textF12.getText()) + "';";
-                System.out.println(query2);
+            List<SelectContainer> container2 = null;
+            String query2 = "SELECT user_id FROM users WHERE name LIKE '"
+                    + fMachine.format(textF11.getText()) + "' AND surname LIKE '"
+                    + fMachine.format(textF12.getText()) + "';";
+            System.out.println(query2);
 
-                try {
-                    container2 = qMachine.select(query2, SelectContainer.class);
-                } catch (Throwable e) {
-                    alert();
-                }
+            try {
+                container2 = qMachine.select(query2, SelectContainer.class);
+            } catch (Throwable e) {
+                Alerts.alert();
+            }
 
                 /*qMachine.query(
                         "INSERT INTO session()"
                 );*/
-            }
-        } else if(choice.equals("user")) {
-            if(!textF11.getText().equals("") && !textF12.getText().equals("") && !textF13.getText().equals("") && !textF21.getText().equals("")) {
-                qMachine.query(
-                        "INSERT INTO users(name, surname, sex, birthday) VALUES ('" +
-                                fMachine.format(textF11.getText()) + "','" +
-                                fMachine.format(textF12.getText()) + "','" +
-                                textF13.getText().toLowerCase() + "','" +
-                                textF21.getText() + "');"
-                );
-                ///adding height / weight
-            }
-        } else if(choice.equals("activity")) {
-            if(!textF11.getText().equals("") && !textF12.getText().equals("")) {
-                qMachine.query(
-                        "INSERT INTO activities(name, sport) VALUES ('" +
-                                textF11.getText().toLowerCase() + "','" +
-                                textF12.getText() + "');"
-                );
-            }
-        } else if(choice.equals("section")) {
-            if(!textF11.getText().equals("") && !textF12.getText().equals("") && !textF13.getText().equals("")
-                    && !textF21.getText().equals("")) {
-                List<SelectContainer> container = null;
-                String query = "SELECT activity_id FROM activities WHERE name LIKE '" + textF11.getText() + "';";
-                System.out.println(query);
+        } else if (choice.equals("user") && FXMLMachine.checkContent(fields, 4)) {
+            success = true;
+            String query = "INSERT INTO users(name, surname, sex, birthday) VALUES ('" +
+                    fMachine.format(textF11.getText()) + "','" +
+                    fMachine.format(textF12.getText()) + "','" +
+                    textF13.getText().toLowerCase() + "','" +
+                    textF21.getText() + "');";
 
-                try {
-                    container = qMachine.select(query, SelectContainer.class);
-                } catch (Throwable e) {
-                    alert();
-                }
-
-                if(!container.isEmpty())
-                    qMachine.query(
-                            "INSERT INTO sections(activity_id, trainer_id, name, city, min_members, max_members) VALUES (" +
-                                    container.get(0).getAt(0) + "," +
-                                    textF12.getText() + ",'" +
-                                    fMachine.format(textF13.getText()) + "','" +
-                                    fMachine.format(textF21.getText()) + "'," +
-                                    textF22.getText() + "," +
-                                    textF23.getText() + ");"
-                    );
+            try {
+                qMachine.query(query);
+            } catch (Throwable e) {
+                success = false;
+                Alerts.alertCustom("Insertion Error", "Results: ", e.getMessage());
             }
-        } else {
-           alert();
+            ///adding height / weight
+        } else if (choice.equals("activity") && FXMLMachine.checkContent(fields, 2)) {
+            success = true;
+            String query = "INSERT INTO activities(name, sport) VALUES ('" +
+                    textF11.getText().toLowerCase() + "','" +
+                    textF12.getText() + "');";
+            try {
+                qMachine.query(query);
+            } catch (Throwable e) {
+                success = false;
+                Alerts.alertCustom("Insertion Error", "Results: ", e.getMessage());
+            }
+        } else if (choice.equals("section") && FXMLMachine.checkContent(fields, 4)) {
+            List<SelectContainer> container = null;
+            String query = "SELECT activity_id FROM activities WHERE name LIKE '" + textF11.getText() + "';";
+            System.out.println(query);
+
+            try {
+                container = qMachine.select(query, SelectContainer.class);
+            } catch (Throwable e) {
+                Alerts.alert();
+            }
+
+            success = true;
+            String query2 = "INSERT INTO sections(activity_id, trainer_id, name, city, min_members, max_members) VALUES (" +
+                    container.get(0).getAt(0) + "," +
+                    textF12.getText() + ",'" +
+                    fMachine.format(textF13.getText()) + "','" +
+                    fMachine.format(textF21.getText()) + "'," +
+                    textF22.getText() + "," +
+                    textF23.getText() + ");";
+
+            try {
+                qMachine.query(query2);
+            } catch (Throwable e) {
+                success = false;
+                if (container.size() == 0)
+                    Alerts.alertCustom("Insertion Error", "Results: ", "Wrong activity name.");
+                else
+                    Alerts.alertCustom("Insertion Error", "Results: ", e.getMessage());
+            }
+        }
+
+        if(success) {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("../View/Main.fxml"));
+            Main.changeScene(actionEvent, loader, "Main");
         }
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         choiceBox.getItems().addAll("user", "session", "activity", "section");
+        List<TextField> fields = new ArrayList<>();
+        TextField[] tmp = {textF11, textF12, textF13, textF21, textF22, textF23, textF24};
+        fields.addAll(Arrays.asList(tmp));
 
         choiceBox.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
             @Override
@@ -159,81 +180,34 @@ public class AddViewController implements Initializable {
                 choice = choiceBox.getItems().get((Integer) number2).toString();
 
                 textinfo.setText("Information needed to add record:");
+                FXMLMachine setInfo = new FXMLMachine();
 
-                if(choice.equals("session")) {
+                if (choice.equals("session")) {
                     text.setText("(name, surname, activity, start time, end time, description, trainer (optional), section (optional))");
-                    textF11.setPromptText("name");
-                    textF12.setPromptText("surname");
-                    textF13.setPromptText("activity");
-                    textF21.setPromptText("start time");
-                    textF22.setPromptText("end time");
-                    textF23.setPromptText("trainer");
-                    textF24.setPromptText("section");
+                    String[] id = {"name", "surname", "activity", "start time", "end time", "trainer", "section"};
+                    setInfo.updateFields(fields, Arrays.asList(id));
                     textArea.setPromptText("description");
-                    textF13.setDisable(false);
-                    textF21.setDisable(false);
-                    textF22.setDisable(false);
-                    textF23.setDisable(false);
-                    textF24.setDisable(false);
                     textArea.setDisable(false);
-                } else if(choice.equals("user")) {
+                } else if (choice.equals("user")) {
                     text.setText("(name, surname, sex, birthday, height (optional), weight (optional))");
-                    textF11.setPromptText("name");
-                    textF12.setPromptText("surname");
-                    textF13.setPromptText("sex");
-                    textF21.setPromptText("yyyy-mm-dd");
-                    textF22.setPromptText("height");
-                    textF23.setPromptText("weight");
-                    textF24.setPromptText("");
+                    String[] id = {"name", "surname", "sex", "yyyy-mm-dd", "height", "weight"};
+                    setInfo.updateFields(fields, Arrays.asList(id));
                     textArea.setPromptText("");
-                    textF13.setDisable(false);
-                    textF21.setDisable(false);
-                    textF22.setDisable(false);
-                    textF23.setDisable(false);
-                    textF24.setDisable(true);
                     textArea.setDisable(true);
-                } else if(choice.equals("activity")) {
+                } else if (choice.equals("activity")) {
                     text.setText("(name, sport)");
-                    textF11.setPromptText("name");
-                    textF12.setPromptText("0/1");
-                    textF13.setPromptText("");
-                    textF21.setPromptText("");
-                    textF22.setPromptText("");
-                    textF23.setPromptText("");
-                    textF24.setPromptText("");
+                    String[] id = {"name", "sport"};
+                    setInfo.updateFields(fields, Arrays.asList(id));
                     textArea.setPromptText("");
-                    textF13.setDisable(true);
-                    textF21.setDisable(true);
-                    textF22.setDisable(true);
-                    textF23.setDisable(true);
-                    textF24.setDisable(true);
                     textArea.setDisable(true);
-                } else if(choice.equals("section")) {
+                } else if (choice.equals("section")) {
                     text.setText("(sport, trainer, name, city, min members, max members)");
-                    textF11.setPromptText("sport");
-                    textF12.setPromptText("trainer");
-                    textF13.setPromptText("name");
-                    textF21.setPromptText("city");
-                    textF22.setPromptText("min members");
-                    textF23.setPromptText("max members");
-                    textF24.setPromptText("");
+                    String[] id = {"sport", "trainer", "name", "city", "min members", "max members"};
+                    setInfo.updateFields(fields, Arrays.asList(id));
                     textArea.setPromptText("");
-                    textF13.setDisable(false);
-                    textF21.setDisable(false);
-                    textF22.setDisable(false);
-                    textF23.setDisable(false);
-                    textF24.setDisable(true);
                     textArea.setDisable(true);
                 }
             }
         });
-    }
-
-    public void alert() {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Input Error");
-        alert.setHeaderText("Results:");
-        alert.setContentText("INVALID DATA. TRY AGAIN.");
-        alert.showAndWait();
     }
 }
