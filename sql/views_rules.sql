@@ -7,8 +7,8 @@ CREATE OR REPLACE VIEW section_session AS SELECT * FROM sessions WHERE section_i
 
 CREATE OR REPLACE RULE section_session_INSERT AS ON INSERT TO section_session
         DO INSTEAD (
-	--INSERT INTO user_session SELECT user_id,(select NEW.session_id),NULL FROM user_section
-               -- WHERE section_id=NEW.section_id AND start_time<=NEW.start_time AND COALESCE(end_time,NEW.end_time)>=NEW.end_time;
+	INSERT INTO user_session SELECT user_id,NEW.session_id,NULL FROM user_section
+                WHERE section_id=NEW.section_id AND start_time<=NEW.start_time AND COALESCE(end_time,NEW.end_time)>=NEW.end_time;
         INSERT INTO sessions VALUES(NEW.session_id,NEW.activity_id,NEW.start_time,NEW.end_time,NEW.description,NEW.trainer_id,NEW.section_id);
         );
 
@@ -21,22 +21,22 @@ CREATE OR REPLACE RULE section_session_DELETE AS ON DELETE TO section_session
 CREATE OR REPLACE RULE section_session_UPDATE AS ON UPDATE TO section_session
         DO INSTEAD NOTHING;
 
-CREATE OR REPLACE VIEW individual_session AS SELECT sessions.*,distance FROM sessions LEFT JOIN user_session USING (session_id) WHERE session_id in (SELECT session_id FROM user_session WHERE user_id!=COALESCE(trainer_id,-1) GROUP BY session_id HAVING count(*)=1);
+DROp view individual_session;
+CREATE OR REPLACE VIEW individual_session AS SELECT user_id,session_id,activity_id,start_time,end_time,description,trainer_id,distance FROM sessions LEFT JOIN user_session USING (session_id) WHERE session_id in (SELECT session_id FROM user_session WHERE user_id!=COALESCE(trainer_id,-1) GROUP BY session_id HAVING count(*)<=1) and user_id!=coalesce(trainer_id,-1);
 
-
-CREATE OR REPLACE RULE section_session_INSERT AS ON INSERT TO section_session
+CREATE OR REPLACE RULE section_session_INSERT AS ON INSERT TO individual_session
         DO INSTEAD (
-        INSERT INTO sessions VALUES(NEW.session_id,NEW.activity_id,NEW.start_time,NEW.end_time,NEW.description,NEW.trainer_id,NEW.section_id);
+        INSERT INTO sessions VALUES(NEW.session_id,NEW.activity_id,NEW.start_time,NEW.end_time,NEW.description,NEW.trainer_id);
 	INSERT INTO user_session VALUES(NEW.user_id,NEW.session_id,NEW.distance);
         );
 
 
-CREATE OR REPLACE RULE section_session_DELETE AS ON DELETE TO section_session
+CREATE OR REPLACE RULE section_session_DELETE AS ON DELETE TO individual_session
         DO INSTEAD (
 	DELETE FROM sessions WHERE session_id=OLD.session_id;
 	);
 
-CREATE OR REPLACE RULE section_session_UPDATE AS ON UPDATE TO section_session
+CREATE OR REPLACE RULE section_session_UPDATE AS ON UPDATE TO individual_session
         DO INSTEAD NOTHING;
 
 CREATE OR REPLACE RULE trainer_session_INSERT AS ON INSERT TO sessions WHERE NEW.trainer_id IS NOT NULL
