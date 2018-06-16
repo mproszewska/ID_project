@@ -20,13 +20,15 @@ public class HeigthWeight {
                 DateTime day = new DateTime(startTime);
                 int height = 150 + random.nextInt(60);
                 int weight = 40 + random.nextInt(140);
-                int maks = weight*(100 + random.nextInt(20))/100;
-                int mini = weight*(100 - random.nextInt(20))/100;
+                int maks = weight*(105 + random.nextInt(20))/100;
+                int mini = weight*(95 - random.nextInt(20))/100;
                 while (!day.isAfter(today)){
                     if(random.nextInt(100) < fraction){
                         Integer newPeril = Double.valueOf(Noise.perlinNoise1D(random.nextInt(), 2, 5)).intValue();
-                        if (weight + newPeril > maks || weight + newPeril < mini)
-                            weight -= newPeril;
+                        if (weight + newPeril > maks)
+                            weight = maks;
+                        else if(weight + newPeril < mini)
+                            weight = mini;
                         else
                             weight += newPeril;
                         int rdm = random.nextInt(100);

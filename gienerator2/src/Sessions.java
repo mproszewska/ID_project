@@ -6,7 +6,7 @@ import java.io.PrintWriter;
 import java.util.Random;
 
 public class Sessions {
-    public static void generate(String date, int users) throws Exception {
+    public static void generate(String date, int users, int disciplines) throws Exception {
         Random random = new Random();
         DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
         DateTime startTime = fmt.parseDateTime(date);
@@ -22,7 +22,7 @@ public class Sessions {
                     day = day.plusDays(1);
                     Integer count = random.nextInt(2);
                     for (int i = 0; i < count; i++) {
-                        Integer discipline = random.nextInt(10)+1;
+                        Integer discipline = random.nextInt(disciplines)+1;
                         DateTime when;
                         DateTime until;
                         if(count == 1){
@@ -49,7 +49,7 @@ public class Sessions {
         }
     }
 
-    private static String getDistance(Integer discipline){
+    public static String getDistance(Integer discipline){
         Random random = new Random();
         if(discipline == 1){
             return Integer.valueOf(500 + 100*random.nextInt(200)).toString();

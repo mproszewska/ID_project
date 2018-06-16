@@ -24,8 +24,9 @@ public class Main {
         Medicaments.generate(date, 20, lower, upper, medicationsCount);
         Heartrate.generate(date, users, resolution);
         Sleeps.generate(date, 20);
-        Sessions.generate(date, 20);
+        Sessions.generate(date, 20, 11);
         HeigthWeight.generate(date, 20, 70);
+        UserSections.generate(date, 22, 12, 99);
         reader.close();
     }
 }

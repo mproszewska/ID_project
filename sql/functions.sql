@@ -171,7 +171,6 @@ CREATE OR REPLACE VIEW user_min_max_heartrate(user_id, min, max)
 
 
 ----
-drop FUNCTION IF EXISTS heartrate_session_type(INTEGER, INTEGER);
 CREATE OR REPLACE FUNCTION heartrate_session_type(user_idd INTEGER, session_idd INTEGER)
   RETURNS VARCHAR AS
 $$
@@ -239,7 +238,6 @@ $$
 LANGUAGE SQL;
 
 ----
-DROP VIEW IF EXISTS activities_meds;
 CREATE OR REPLACE VIEW activities_meds
   AS
     SELECT
@@ -255,7 +253,6 @@ CREATE OR REPLACE VIEW activities_meds
       JOIN activities a ON s.activity_id = a.activity_id;
 
 ----
-DROP FUNCTION IF EXISTS get_best_stuff(INTEGER);
 CREATE OR REPLACE FUNCTION get_best_stuff(act_id INTEGER)
   RETURNS TABLE(medications CHARACTER VARYING[],avg_result NUMERIC) AS
 $$
@@ -277,6 +274,60 @@ CREATE VIEW best_medication_sets(activity, medication_set, result) AS
     (select gb.avg_result from get_best_stuff(a.activity_id) gb)
   FROM activities a;
 
+----
+CREATE OR REPLACE VIEW weight_differences(user_id, month, difference_sum) AS
+  SELECT
+    user_id,
+    to_char("date", 'Month'),
+    max(weight)-min(weight)
+  FROM height_weight hw
+  GROUP BY user_id, to_char("date", 'Month')
+  ORDER BY 1, 2;
+
+----
+CREATE OR REPLACE VIEW months_weight_differences(month, difference_avg) AS
+  SELECT
+    month,
+    avg(difference_sum)
+  FROM weight_differences
+  GROUP BY month
+  ORDER BY  avg(difference_sum) DESC;
+
+----
+CREATE OR REPLACE VIEW activities_sleep_avg_result AS
+  SELECT
+    a.name,
+    avg(coalesce(distance, extract(EPOCH FROM (ses.end_time - ses.start_time))/60) ) result,
+    to_char(s.end_time - s.start_time, 'hh:MIh') sleep_duration
+  FROM user_session us
+  JOIN sessions ses ON us.session_id = ses.session_id
+  JOIN activities a ON ses.activity_id = a.activity_id
+  JOIN sleep s ON us.user_id = s.user_id AND ses.start_time::DATE = s.start_time::DATE
+  GROUP BY name, sleep_duration
+  ORDER BY name, 2 DESC;
+
+----
+CREATE OR REPLACE FUNCTION get_best_sleeps(act_id INTEGER)
+  RETURNS TABLE(sleep_time VARCHAR, result NUMERIC) AS
+$$
+SELECT
+  sleep_duration,
+  result::NUMERIC
+FROM activities_sleep_avg_result asr
+JOIN activities a ON a.name = asr.name
+WHERE act_id = a.activity_id
+ORDER BY result DESC
+LIMIT 1;
+$$
+LANGUAGE sql;
+
+----
+CREATE OR REPLACE VIEW best_sleep_time AS
+  SELECT
+    a.name,
+    (select gb.sleep_time from get_best_sleeps(a.activity_id) gb),
+    round((select gb.result from get_best_sleeps(a.activity_id) gb),2) "avg distance/time"
+  FROM activities a;
 
 ------------TODO
 CREATE OR REPLACE FUNCTION section_timesheet(section_id INTEGER, fist DATE, last DATE)
@@ -288,48 +339,23 @@ END;
 $$
 LANGUAGE plpgsql;
 
----------------------TODO
-CREATE OR REPLACE FUNCTION medications_sessions(user_id INTEGER, fist DATE, last DATE)
-  RETURNS TABLE(mediaction_id INTEGER) AS $$
-BEGIN
-  RETURN QUERY EXECUTE
-  'select 0 from mediaction_user';
-END;
-$$
-LANGUAGE plpgsql;
+----
+CREATE VIEW sections_info AS
+  SELECT
+    s.name,
+    city,
+    u.name || ' ' || u.surname as trener,
+    a.name as sport
+  FROM sections s
+  JOIN users u ON s.trainer_id = u.user_id
+  JOIN activities a ON s.activity_id = a.activity_id
+  ORDER BY s.section_id;
 
-------------------
+----
+/*CREATE OR REPLACE view get_section;
 
-
---other functions
-CREATE OR REPLACE FUNCTION get_table(input_table TEXT)
-  RETURNS TABLE(user_id INT, start_time TIMESTAMP, end_time TIMESTAMP) AS $$
-BEGIN
-  RETURN QUERY EXECUTE
-  concat('SELECT user_id, start_time, end_time FROM ', input_table);
-END;
-$$
-LANGUAGE plpgsql;
-
-
-CREATE OR REPLACE FUNCTION time_interval_check(id INT, start TIMESTAMP, endd TIMESTAMP, tab TEXT)
-  RETURNS BOOL AS $f$
-BEGIN
-  IF (
-       SELECT t.user_id
-       FROM (SELECT *
-             FROM get_table(tab)) t
-       WHERE t.user_id = id AND (
-         (t.start_time >= start AND t.start_time < endd) OR
-         (t.end_time > start AND t.end_time <= endd) OR
-         (start >= t.start_time AND start < t.end_time) OR
-         (endd > t.start_time AND endd <= t.end_time)
-       )
-     ) IS NOT NULL
-  THEN RETURN FALSE; END IF;
-
-  RETURN TRUE;
-END;
-$f$
-LANGUAGE plpgsql;
+SELECT
+  *
+FROM user_section us
+JOIN sessions s ON s.section_id = us.section_id*/
 

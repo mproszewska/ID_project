@@ -17,10 +17,8 @@ CREATE OR REPLACE RULE trainer_session_insert AS ON INSERT TO sessions where NEW
 		insert into user_session values(NEW.trainer_id,NEW.session_id,null)
 	);
 
-CREATE OR REPLACE RULE trainer_session_d_0 AS ON DELETE TO sessions where OLD.trainer_id is not null
-	DO (
-		delete from user_session where user_id = OLD.trainer_id and session_id = OLD.session_id
-	);
+CREATE OR REPLACE RULE accident_delete AS ON DELETE TO accidents
+  DO ALSO DELETE FROM injuries WHERE old.accident_id = injuries.accident_id;
 
 CREATE OR REPLACE RULE trainer_session_d_3 AS ON UPDATE TO sessions where OLD.trainer_id!=NEW.trainer_id
 	DO (

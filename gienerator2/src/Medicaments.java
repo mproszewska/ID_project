@@ -25,6 +25,5 @@ public class Medicaments {
             }
             out.println("\\.");
         }
-
     }
 }
