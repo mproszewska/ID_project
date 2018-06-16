@@ -81,7 +81,7 @@ CREATE TABLE injuries (
 	accident_id          INTEGER  ,
 	description          VARCHAR(100),
 	duration             INTERVAL  ,
-	"date"		     DATE,
+	"date"		     DATE NOT NULL,
 	CONSTRAINT uq_injuries_accident_id_users_id UNIQUE ( user_id,"date" ),
 	CONSTRAINT fk_injuries_accidents FOREIGN KEY ( accident_id ) REFERENCES accidents( accident_id )  ON DELETE SET NULL,
 	CONSTRAINT fk_injuries_users FOREIGN KEY ( user_id ) REFERENCES users( user_id ) ON DELETE CASCADE 

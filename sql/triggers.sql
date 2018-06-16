@@ -108,6 +108,7 @@ DECLARE
 u_age NUMERIC;
 u_sex CHAR(1);
 max_height NUMERIC;
+min_height NUMERIC;
 BEGIN
 u_age = (SELECT DATE_PART('year',NEW."date"::DATE)-DATE_PART('year',(SELECT birthday FROM users WHERE user_id=NEW.user_id)::DATE));
 u_sex = (SELECT sex FROM users WHERE user_id=NEW.user_id);
@@ -121,9 +122,13 @@ IF u_sex = 'k' AND (u_age*0.074)-(NEW.weight *0.05741)+min_heartrate(u_age)-20.4
 IF (NEW.weight*10000)/(NEW.height*NEW.height) not between 10 and 50
 	THEN RAISE NOTICE 'WRONG HEIGHT TO WEIGHT RATIO';
 	RETURN NULL; END IF;
-max_height = (SELECT MAX(height) FROM height_weight WHERE user_id=NEW.user_id);
-if max_height IS NOT NULL AND (NEW.height-max_height<(-3))
+max_height = (SELECT MAX(height) FROM height_weight WHERE user_id=NEW.user_id AND "date"<NEW."date");
+if max_height IS NOT NULL AND (max_height-3>NEW.height)
 	THEN RAISE NOTICE 'TOO SHORT';
+	RETURN NULL; END IF;
+min_height = (SELECT MIN(height) FROM height_weight WHERE user_id=NEW.user_id AND "date">NEW."date");
+if min_height IS NOT NULL AND (min_height+3<NEW.height)
+	THEN RAISE NOTICE 'TOO HIGH';
 	RETURN NULL; END IF;
 RETURN NEW;
 END;
@@ -184,7 +189,7 @@ IF NEW.min_age IS NOT NULL
 	(SELECT user_id 
 		FROM user_section left join users USING (user_id) 
 		WHERE section_id=NEW.section_id 
-			AND (DATE_PART('year',CURRENT_DATE::DATE)-DATE_PART('year',birthday::DATE))>NEW.max_age) 
+			AND (DATE_PART('year',start_time)-DATE_PART('year',birthday::DATE))>NEW.max_age) 
 	IS NOT NULL 
 		THEN RAISE NOTICE 'WRONG MIN AGE'; 
 		RETURN NULL; END IF;
@@ -193,7 +198,7 @@ IF NEW.max_age IS NOT NULL
 	AND 
 	(SELECT user_id FROM user_section left join users USING (user_id) 
 		WHERE section_id=NEW.section_id 
-			AND DATE_PART('year',CURRENT_DATE::date)-DATE_PART('year',birthday::date)<NEW.min_age) 
+			AND DATE_PART('year',end_time)-DATE_PART('year',birthday::date)<NEW.min_age) 
 	IS NOT NULL 
 		THEN RAISE NOTICE 'WRONG MAX AGE'; 
 		RETURN NULL; END IF;
