@@ -7,7 +7,7 @@ $$
 SELECT
  weight
 FROM height_weight
-WHERE weight IS NOT NULL AND user_id = userid AND "date" <= day
+WHERE user_id = userid AND "date" <= day
 ORDER BY "date" DESC
 LIMIT 1;
 $$
@@ -21,13 +21,31 @@ $$
 SELECT
   height
 FROM height_weight
-WHERE height_weight.height IS NOT NULL AND user_id = userid AND "date" <= day
+WHERE user_id = userid AND "date" <= day
 ORDER BY "date" DESC
 LIMIT 1;
 $$
 LANGUAGE sql;
 
+CREATE OR REPLACE FUNCTION get_age(userid INTEGER, day DATE)
+  RETURNS NUMERIC AS
+$$
+SELECT
+  DATE_PART('year',age(day,birthday))::NUMERIC
+FROM users
+WHERE user_id = userid;
+$$
+LANGUAGE sql;
 
+CREATE OR REPLACE FUNCTION get_age(userid INTEGER, day TIMESTAMP)
+  RETURNS NUMERIC AS
+$$
+SELECT
+  DATE_PART('year',age(day,birthday))::NUMERIC
+FROM users
+WHERE user_id = userid;
+$$
+LANGUAGE sql;
 ----
 CREATE OR REPLACE FUNCTION kcal(userid INTEGER, start_0 TIMESTAMP, end_0 TIMESTAMP)
   RETURNS NUMERIC AS $$
@@ -56,9 +74,7 @@ BEGIN
   sex_0 = (SELECT sex
            FROM users
            WHERE user_id = userid);
-  age_0 = (SELECT DATE_PART('year', start_0 :: DATE) - DATE_PART('year', birthday :: DATE)
-           FROM users
-           WHERE user_id = userid);
+  age_0 = get_age(userid,start_0);
   weight_0 = get_weight(userid, start_0::DATE);
   seconds = 0;
   heartrates_0 = 0;
@@ -81,10 +97,8 @@ BEGIN
 last_weight = weight_0;
     weight_0 = get_weight(userid, j::TIMESTAMP);
  last_age = age_0;
-    age_0 = (SELECT DATE_PART('year', j :: DATE) - DATE_PART('year', birthday :: DATE)
-           FROM users
-           WHERE user_id = userid);
-
+    age_0 = get_age(userid,j);
+  
     if last_weight != weight_0 OR age_0!=last_age THEN
 
   IF seconds>0 THEN
@@ -411,45 +425,38 @@ CREATE OR REPLACE VIEW best_sleep_time AS
 ----
 DROP FUNCTION IF EXISTS section_ranking(INTEGER,DATE,DATE) CASCADE;
 CREATE OR REPLACE FUNCTION section_ranking(sectionid INTEGER, start_0 DATE, end_0 DATE)
- RETURNS TABLE(user_id INT, name varchar, attendance bigint, distance numeric, kcal numeric, injured bool) AS
-$$
-SELECT
-  user_id,
-  (
-    SELECT CONCAT(name, ' ', surname)
-    FROM users
-    WHERE us.user_id = user_id
-  ),
-  (
-    SELECT CASE WHEN COUNT(*) > 0
-      THEN COUNT(*) / (SELECT COUNT(*)
-                       FROM sessions
-                       WHERE section_id = sectionid AND start_time :: DATE <= end_0 AND end_time :: DATE >= start_0)
-           ELSE 0 END
-    FROM user_session
-      LEFT JOIN sessions s USING (session_id)
-    WHERE
-      us.user_id = user_id AND section_id = sectionid AND start_time :: DATE <= end_0 AND end_time :: DATE >= start_0
-  ),
-  (
-    SELECT SUM(distance)
-    FROM user_session
-      LEFT JOIN sessions USING (session_id)
-    WHERE user_id = us.user_id AND start_time :: DATE <= end_0 AND end_time :: DATE >= start_0
-  ),
-  kcal(user_id, start_0 :: TIMESTAMP, (end_0 + INTERVAL '1 day') :: TIMESTAMP),
-  CASE
-  WHEN (
-         SELECT user_id
-         FROM injuries
-         WHERE user_id = us.user_id AND "date" + duration >= start_0 AND "date" <= end_0
-       ) IS NOT NULL
-    THEN TRUE
-  ELSE FALSE
-  END
+ RETURNS TABLE(user_id INTEGER, name VARCHAR,age NUMERIC,attendance bigint,distance NUMERIC,kcal NUMERIC,injured BOOL) AS $$
 
-FROM user_section us
-WHERE section_id = sectionid AND start_time :: DATE <= end_0 AND COALESCE(end_time, start_0) :: DATE >= start_0;
+ SELECT user_id,
+(
+	SELECT CONCAT(name,' ',surname) 
+		FROM users 
+		WHERE us.user_id=user_id
+),
+get_age(user_id,start_0),
+(
+	SELECT CASE WHEN COUNT(*)>0 
+		THEN COUNT(*)/(SELECT COUNT(*) FROM sessions WHERE section_id=sectionid AND start_time::DATE<= end_0 AND end_time::DATE >= start_0) ELSE 0 END 
+	FROM user_session 
+		LEFT JOIN sessions s USING (session_id) 
+	WHERE us.user_id=user_id AND section_id=sectionid AND start_time::DATE<= end_0 AND end_time::DATE >= start_0
+),
+(
+	SELECT SUM(distance) 
+		FROM user_session 
+			LEFT JOIN sessions USING (session_id) 
+		WHERE user_id=us.user_id AND start_time::DATE<= end_0 AND end_time::DATE >= start_0
+),
+kcal(user_id,start_0::TIMESTAMP,(end_0+INTERVAL '1 day')::TIMESTAMP),
+CASE 
+	WHEN (
+		SELECT user_id 
+			FROM injuries 
+			WHERE user_id=us.user_id AND "date"+duration>=start_0 AND "date"<=end_0
+		) IS NOT NULL 
+	THEN true 
+	ELSE false 
+END
 
 $$
 LANGUAGE sql;

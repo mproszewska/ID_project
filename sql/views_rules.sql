@@ -39,7 +39,6 @@ CREATE OR REPLACE RULE section_session_UPDATE AS ON UPDATE TO section_session
 	
 	);
 
-DROp view individual_session;
 CREATE OR REPLACE VIEW individual_session AS SELECT user_id,session_id,activity_id,start_time,end_time,description,trainer_id,distance FROM sessions LEFT JOIN user_session USING (session_id) WHERE session_id in (SELECT session_id FROM user_session WHERE user_id!=COALESCE(trainer_id,-1) GROUP BY session_id HAVING count(*)<=1) and user_id!=coalesce(trainer_id,-1);
 
 CREATE OR REPLACE RULE section_session_INSERT AS ON INSERT TO individual_session
