@@ -98,7 +98,7 @@ last_weight = weight_0;
     weight_0 = get_weight(userid, j::TIMESTAMP);
  last_age = age_0;
     age_0 = get_age(userid,j);
-  
+
     if last_weight != weight_0 OR age_0!=last_age THEN
 
   IF seconds>0 THEN
@@ -429,50 +429,92 @@ CREATE OR REPLACE FUNCTION section_ranking(sectionid INTEGER, start_0 DATE, end_
 
  SELECT user_id,
 (
-	SELECT CONCAT(name,' ',surname) 
-		FROM users 
-		WHERE us.user_id=user_id
+  SELECT CONCAT(name,' ',surname)
+    FROM users
+    WHERE us.user_id=user_id
 ),
 get_age(user_id,start_0),
 (
-	SELECT CASE WHEN COUNT(*)>0 
-		THEN COUNT(*)/(SELECT COUNT(*) FROM sessions WHERE section_id=sectionid AND start_time::DATE<= end_0 AND end_time::DATE >= start_0) ELSE 0 END 
-	FROM user_session 
-		LEFT JOIN sessions s USING (session_id) 
-	WHERE us.user_id=user_id AND section_id=sectionid AND start_time::DATE<= end_0 AND end_time::DATE >= start_0
+  SELECT CASE WHEN COUNT(*)>0
+    THEN COUNT(*)/(SELECT COUNT(*) FROM sessions WHERE section_id=sectionid AND start_time::DATE<= end_0 AND end_time::DATE >= start_0) ELSE 0 END
+  FROM user_session
+    LEFT JOIN sessions s USING (session_id)
+  WHERE us.user_id=user_id AND section_id=sectionid AND start_time::DATE<= end_0 AND end_time::DATE >= start_0
 ),
 (
-	SELECT SUM(distance) 
-		FROM user_session 
-			LEFT JOIN sessions USING (session_id) 
-		WHERE user_id=us.user_id AND start_time::DATE<= end_0 AND end_time::DATE >= start_0
+  SELECT SUM(distance)
+    FROM user_session
+      LEFT JOIN sessions USING (session_id)
+    WHERE user_id=us.user_id AND start_time::DATE<= end_0 AND end_time::DATE >= start_0
 ),
 kcal(user_id,start_0::TIMESTAMP,(end_0+INTERVAL '1 day')::TIMESTAMP),
-CASE 
-	WHEN (
-		SELECT user_id 
-			FROM injuries 
-			WHERE user_id=us.user_id AND "date"+duration>=start_0 AND "date"<=end_0
-		) IS NOT NULL 
-	THEN true 
-	ELSE false 
+CASE
+  WHEN (
+    SELECT user_id
+      FROM injuries
+      WHERE user_id=us.user_id AND "date"+duration>=start_0 AND "date"<=end_0
+    ) IS NOT NULL
+  THEN true
+  ELSE false
 END
+FROM user_section us WHERE section_id=sectionid AND start_time::DATE<= end_0 AND COALESCE(end_time,start_0)::DATE >= start_0 ;
+$$
+LANGUAGE sql;
 
+
+----
+CREATE OR REPLACE FUNCTION get_users_number_from_section(sectionid INTEGER)
+  RETURNS INTEGER AS
+$$
+SELECT
+  count (*)::INTEGER
+FROM user_section ss
+WHERE section_id = sectionid
+GROUP BY section_id;
 $$
 LANGUAGE sql;
 
 ----
-CREATE VIEW sections_info AS
+CREATE OR REPLACE FUNCTION get_users_from_section(sectionid INTEGER)
+  RETURNS TABLE (name VARCHAR) AS
+$$
+SELECT
+  u.name || ' ' || u.surname as name
+FROM users u
+JOIN user_section ss ON u.user_id = ss.user_id
+WHERE section_id = sectionid AND ss.end_time ISNULL
+ORDER BY u.surname, u.name;
+$$
+LANGUAGE sql;
+
+
+----
+CREATE OR REPLACE FUNCTION get_meetings_number(sectionid INTEGER)
+  RETURNS INTEGER AS
+$$
+SELECT
+  count(*)::INTEGER
+FROM sessions s
+WHERE sectionid = s.section_id
+GROUP BY section_id;
+$$
+LANGUAGE sql;
+
+
+----
+DROP VIEW IF EXISTS sections_info;
+CREATE OR REPLACE VIEW sections_info AS
   SELECT
     s.name,
     city,
     u.name || ' ' || u.surname as trener,
-    a.name as sport
+    a.name as sport,
+    get_users_number_from_section(s.section_id) as members,
+    get_meetings_number(s.section_id) as meetings_number
   FROM sections s
   JOIN users u ON s.trainer_id = u.user_id
   JOIN activities a ON s.activity_id = a.activity_id
   ORDER BY s.section_id;
-
 
 ----
 CREATE OR REPLACE FUNCTION time_interval_check(id INT, start TIMESTAMP, endd TIMESTAMP, tab TEXT)
@@ -493,3 +535,4 @@ BEGIN
 END;
 $f$
 LANGUAGE plpgsql;
+

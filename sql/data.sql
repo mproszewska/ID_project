@@ -37,7 +37,7 @@ czytanie	0
 piłka nożna	1
 krykiet	1
 gimnastyka	1
-klepanie	0
+klepanie	1
 wudzitsu	1
 \.
 
@@ -61,17 +61,16 @@ ABCAA
 \.
 
 COPY sections (activity_id, name,city,trainer_id,min_age,max_age) FROM stdin;
-11	Weekendowy Klub Przyjaciół ID	Kraków	3	20	22
-11	TCS UJ	Niezdalandia	9	20	35
+11	Weekendowy Klub Przyjaciół ID	Kraków	3	19	23
+11	TCS UJ	Niezdalandia	9	19	35
 1	Klub Bieżnika	Bieżanów	10	\N	\N
 9	Krokietnicy	Kraków	4	\N	\N
-6	Golonka&Beer	Tłuszcz	3	\N	\N
+12	Golonka&Beer	Tłuszcz	3	\N	\N
 12	Samonieżąd Uczniowski	Kraków	12	\N	\N
 12	The Legends	Kraków	11	\N	\N
 2	AZS UJ	Kraków	8	10	99
 1	AZS AGH	Kraków	7	11	70
 1	AZS AWF	Warszawa	6	16	80
-7	AZS SGGW	Warszawa	4	18	99
 9	AZS UJ	Kraków	2	6	96
 \.
 

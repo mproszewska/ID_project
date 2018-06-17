@@ -1,4 +1,12 @@
  DROP FUNCTION sections_check() cascade;
+ drop FUNCTION get_weight(INTEGER, TIMESTAMP);
+ drop function get_heigth(INTEGER, DATE);
+ drop FUNCTION get_age(INTEGER, DATE);
+ drop FUNCTION get_age(INTEGER, TIMESTAMP);
+ drop FUNCTION max_heartrate( NUMERIC);
+ drop FUNCTION min_heartrate( NUMERIC);
+ drop FUNCTION bmi( INTEGER, DATE);
+ drop FUNCTION bmi_description( NUMERIC);
  DROP FUNCTION sleep_check();
  DROP FUNCTION heartrates_check();
  DROP FUNCTION injuries_check() cascade;

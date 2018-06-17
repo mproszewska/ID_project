@@ -9,11 +9,15 @@ import java.util.*;
 class Section{
     Integer id;
     Integer act;
-    List<Integer> people = new ArrayList<>();
+    Set<Integer> people = new HashSet<>();
 
     Section(int id, int act){
         this.id = id;
         this.act = act;
+    }
+
+    Set<Integer> getPeople(){
+        return people;
     }
 
     void add(Integer person){
@@ -46,15 +50,11 @@ public class UserSections {
         DateTime today = new DateTime().minusDays(1);
         try (PrintWriter out = new PrintWriter("sections.sql")) {
             out.println("COPY user_section (user_id, section_id,start_time) FROM stdin;");
-            for (int j = 4; j <= users; j++) {
-                Set<Integer> sections = new HashSet<>();
-                for (int i = 0; i < random.nextInt(5)+2; i++)
-                    sections.add(random.nextInt(sectionsNumber-2)+2);
-
-                for (Integer section : sections){
-                    list.get(section).add(j);
-                    out.println(j + "\t" + section + "\t" + fmt.print(startTime.minusDays(random.nextInt(1000))));
-                }
+            for (int j = 2; j <= sectionsNumber; j++){
+                for (int i = 0; i < random.nextInt(10)+3; i++)
+                    list.get(j-1).add(random.nextInt(users)+1);
+                for (Integer person : list.get(j-1).getPeople())
+                    out.println(person + "\t" + j + "\t" + fmt.print(startTime.minusDays(random.nextInt(1000))));
             }
             out.println("\\.");
         }
