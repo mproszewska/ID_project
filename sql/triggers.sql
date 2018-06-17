@@ -47,10 +47,9 @@ IF  time_interval_check(NEW.user_id,t1,t2,'sleep') IS false
 	THEN RAISE NOTICE 'USER SLEEPS';
 	RETURN NULL; END IF;
 
-IF  time_interval_check(NEW.user_id,t1,t2,
-	'(SELECT user_id,a."date" AS start_time,a."date"+duration AS end_time FROM injuries LEFT JOIN accidents AS a USING(accident_id)) AS inj') IS false 
+IF  time_interval_check(NEW.user_id,t1,t2,'injuries') IS false 
 		THEN RAISE NOTICE 'USER HAS INJURY'; 
-		RETURN NULL; END IF;
+		 RETURN NULL; END IF;
 
 IF section IS NOT NULL AND 
 	(SELECT user_id FROM user_section WHERE user_id=NEW.user_id AND section_id=section AND start_time<=t1 AND COALESCE(end_time,t2)>=t2) IS NULL 
@@ -142,13 +141,14 @@ DECLARE
 u_birthday DATE;
 BEGIN
 u_birthday = (SELECT birthday FROM users WHERE user_id=NEW.user_id) ;
-IF NEW."date"<u_birthday
+IF NEW.start_time<u_birthday
 	THEN RAISE NOTICE 'USER IS NOT BORN'; 
 	RETURN NULL; END IF;
 
-IF NEW.accident_id IS NOT NULL AND (SELECT "date"::date FROM accidents WHERE accident_id = NEW.accident_id) != NEW."date" 
-	THEN RAISE NOTICE 'WRONG DATE'; 
-	RETURN NULL; END IF;
+IF  time_interval_check(NEW.user_id,NEW.start_time,NEW.end_time,
+	'user_session LEFT JOIN sessions USING (session_id)') IS false 
+		THEN RAISE NOTICE 'USER DURING SESSION';
+		RETURN NULL; END IF;
 
 RETURN NEW;
 END;
@@ -261,7 +261,7 @@ IF  maxage IS NOT NULL AND NEW.end_time IS NOT NULL AND get_age(NEW.user_id,NEW.
 	THEN RAISE NOTICE 'WRONG MAXIMAL AGE'; 
 	RETURN NULL;END IF;
 
-IF  maxage IS NOT NULL AND NEW.end_time IS NULL AND get_age(NEW.user_id, CURRENT_DATE)>maxage
+IF  maxage IS NOT NULL AND NEW.end_time IS NULL
 	THEN RAISE NOTICE 'WRONG MAXIMAL AGE'; 
 	RETURN NULL;END IF;
 

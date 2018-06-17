@@ -13,8 +13,6 @@ CREATE OR REPLACE RULE section_session_INSERT AS ON INSERT TO section_session
         );
 
 
-CREATE OR REPLACE RULE accident_delete AS ON DELETE TO accidents
-  DO ALSO DELETE FROM injuries WHERE old.accident_id = injuries.accident_id;
 CREATE OR REPLACE RULE section_session_DELETE AS ON DELETE TO section_session
         DO INSTEAD (
 	DELETE FROM sessions WHERE session_id=OLD.session_id;

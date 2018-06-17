@@ -68,26 +68,15 @@ ALTER TABLE height_weight ADD CONSTRAINT cns_height_weight_0 CHECK ( weight > 0 
 
 CREATE INDEX idx_height_weight_user_id ON height_weight ( user_id );
 
-DROP TABLE IF EXISTS accidents CASCADE;
-CREATE TABLE accidents ( 
-	accident_id          SERIAL,
-	"date"               TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-	CONSTRAINT pk_accidents_accident_id PRIMARY KEY ( accident_id )
- );
-
 DROP TABLE IF EXISTS injuries CASCADE;
 CREATE TABLE injuries ( 
 	user_id              INTEGER  NOT NULL,
-	accident_id          INTEGER  ,
 	description          VARCHAR(100),
-	duration             INTERVAL  ,
-	"date"		     DATE NOT NULL,
-	CONSTRAINT uq_injuries_accident_id_users_id UNIQUE ( user_id,"date" ),
-	CONSTRAINT fk_injuries_accidents FOREIGN KEY ( accident_id ) REFERENCES accidents( accident_id )  ON DELETE SET NULL,
+	start_time		     TIMESTAMP NOT NULL,
+	end_time	TIMESTAMP,
 	CONSTRAINT fk_injuries_users FOREIGN KEY ( user_id ) REFERENCES users( user_id ) ON DELETE CASCADE 
  );
 
-CREATE INDEX idx_injuries_accident_id ON injuries ( accident_id );
 
 CREATE INDEX idx_injuries_user_id ON injuries ( user_id );
 
