@@ -1,14 +1,14 @@
 --funtions
 
 ----
-CREATE OR REPLACE FUNCTION get_weight(userid INTEGER, day DATE)
+CREATE OR REPLACE FUNCTION get_weight(userid INTEGER, day TIMESTAMP)
   RETURNS NUMERIC(3) AS
 $$
 SELECT
-  weight
+ weight
 FROM height_weight
-WHERE weight IS NOT NULL AND user_id = userid AND date <= day
-ORDER BY date DESC
+WHERE weight IS NOT NULL AND user_id = userid AND "date" <= day
+ORDER BY "date" DESC
 LIMIT 1;
 $$
 LANGUAGE sql;
@@ -21,23 +21,21 @@ $$
 SELECT
   height
 FROM height_weight
-WHERE height_weight.height IS NOT NULL AND user_id = userid AND date <= day
-ORDER BY date DESC
+WHERE height_weight.height IS NOT NULL AND user_id = userid AND "date" <= day
+ORDER BY "date" DESC
 LIMIT 1;
 $$
 LANGUAGE sql;
 
 
 ----
-CREATE OR REPLACE FUNCTION kcal_during_session(userid INTEGER, sessionid INTEGER)
+CREATE OR REPLACE FUNCTION kcal(userid INTEGER, start_0 TIMESTAMP, end_0 TIMESTAMP)
   RETURNS NUMERIC AS $$
 DECLARE
   i        NUMERIC;
   j        TIMESTAMP;
   k        TIMESTAMP;
   m        NUMERIC;
-  start_0  TIMESTAMP;
-  end_0    TIMESTAMP;
   sex_0    CHAR;
   age_0    NUMERIC;
   weight_0 NUMERIC;
@@ -45,25 +43,26 @@ DECLARE
   heartrates_0    NUMERIC;
   lasttime        TIMESTAMP;
   avg_heartrate_0 NUMERIC;
-
+  last_weight NUMERIC;
+  last_age NUMERIC;
+  result NUMERIC;
+  t timestamp;
 BEGIN
+  IF end_0<=start_0 THEN RETURN 0.00; END IF;
+  IF end_0 IS NULL THEN end_0  = CURRENT_TIMESTAMP::timestamp without time zone; END IF;
+  t = (SELECT MIN("date"::TIMESTAMP) FROM height_weight where weight is not null GROUP BY user_id HAVING user_id=userid);
+  IF t > start_0 THEN start_0=t; END IF;
+  IF t IS NULL THEN RAISE NOTICE 'NO INFORMATION ABOUT WEIGHT'; RETURN 0.00; END IF;
   sex_0 = (SELECT sex
            FROM users
            WHERE user_id = userid);
-  start_0 = (SELECT start_time
-             FROM sessions s
-             WHERE s.session_id = sessionid);
-  end_0 = (SELECT end_time
-           FROM sessions s
-           WHERE s.session_id = sessionid);
   age_0 = (SELECT DATE_PART('year', start_0 :: DATE) - DATE_PART('year', birthday :: DATE)
            FROM users
            WHERE user_id = userid);
   weight_0 = get_weight(userid, start_0::DATE);
-  seconds = (SELECT EXTRACT(EPOCH FROM (end_0 - start_0)));
-  lasttime = start_0;
+  seconds = 0;
   heartrates_0 = 0;
-
+  result=0;
   FOR i, j, k IN SELECT
                    avg_heartrate,
                    start_time,
@@ -71,36 +70,84 @@ BEGIN
                  FROM heartrates h
                  WHERE h.user_id = userid AND h.end_time >= start_0 AND h.start_time <= end_0
   LOOP
-    IF lasttime < j
-    THEN RAISE NOTICE 'NOT CONTINUOUS DATA';
-      RETURN NULL; END IF;
-    lasttime = k;
+    
     m = (SELECT EXTRACT(EPOCH FROM (k - j)));
     IF j < start_0
-    THEN m = m - (SELECT EXTRACT(EPOCH FROM (start_0 - j))); END IF;
+    THEN m = m - (SELECT EXTRACT(EPOCH FROM (start_0 - j))) ;END IF;
     IF k > end_0
-    THEN m = m - (SELECT EXTRACT(EPOCH FROM (k - end_0))); END IF;
+    THEN m = m - (SELECT EXTRACT(EPOCH FROM (k - end_0))) ; END IF;
     heartrates_0 = heartrates_0 + i * m;
+    seconds = seconds + m;
+last_weight = weight_0;
+    weight_0 = get_weight(userid, j::TIMESTAMP);
+ last_age = age_0;
+    age_0 = (SELECT DATE_PART('year', j :: DATE) - DATE_PART('year', birthday :: DATE)
+           FROM users
+           WHERE user_id = userid);
+  
+    if last_weight != weight_0 OR age_0!=last_age THEN
+
+	IF seconds>0 THEN
+	    avg_heartrate_0 = heartrates_0 / seconds;
+		  IF sex_0 = 'm' THEN
+		  		result = result + ((last_age * 0.2017) - (last_weight * 0.09036) + (avg_heartrate_0 * 0.6309) - 55.0969) * (seconds / 60) / 4.184;
+		  	ELSE 
+				result = result + ((last_age * 0.074) - (last_weight  * 0.05741) + (avg_heartrate_0 * 0.4472) - 20.4022) * (seconds / 60) / 4.184; 
+			END IF;
+	   seconds = 0;
+	   heartrates_0=0;
+	   END IF;
+   END IF;	
   END LOOP;
-
-  IF lasttime < end_0
-  THEN RAISE NOTICE 'NOT CONTINUOUS DATA';
-    RETURN NULL; END IF;
-
+  IF seconds>0 THEN
   avg_heartrate_0 = heartrates_0 / seconds;
-
-  IF sex_0 = 'm'
-  THEN RETURN ROUND(
-      ((age_0 * 0.2017) - (weight_0 * 0.09036) + (avg_heartrate_0 * 0.6309) - 55.0969) * (seconds / 60) / 4.184, 2);
-  ELSE RETURN ROUND(
-      ((age_0 * 0.074) - (weight_0 * 0.05741) + (avg_heartrate_0 * 0.4472) - 20.4022) * (seconds / 60) / 4.184,
-      2); END IF;
-
+	  IF sex_0 = 'm' THEN
+	  		result = result + ((last_age * 0.2017) - (last_weight * 0.09036) + (avg_heartrate_0 * 0.6309) - 55.0969) * (seconds / 60) / 4.184;
+	  	ELSE 
+			result = result + ((last_age * 0.074) - (last_weight  * 0.05741) + (avg_heartrate_0 * 0.4472) - 20.4022) * (seconds / 60) / 4.184; 
+		END IF;
+ 
+  END IF;
+  RETURN ROUND(result,2);
 END;
 $$
 LANGUAGE plpgsql;
 
+----
+CREATE OR REPLACE FUNCTION kcal_during_session(userid INTEGER, sessionid INTEGER)
+  RETURNS NUMERIC AS $$
+DECLARE
+  start_0  TIMESTAMP;
+  end_0    TIMESTAMP;
+BEGIN
+ 
+  start_0 = (SELECT start_time
+             FROM sessions s
+             WHERE s.session_id = sessionid);
+  end_0 = (SELECT end_time
+           FROM sessions s
+           WHERE s.session_id = sessionid);
+  RETURN kcal(userid,start_0,end_0);
+END;
+$$
+LANGUAGE plpgsql;
+----
 
+CREATE OR REPLACE FUNCTION max_heartrate(age NUMERIC)
+	RETURNS NUMERIC AS $$
+BEGIN
+RETURN 211-(age*0.64);
+END;
+$$
+LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION min_heartrate(age NUMERIC)
+	RETURNS NUMERIC AS $$
+BEGIN
+RETURN max_heartrate(age)*0.3;
+END;
+$$
+LANGUAGE plpgsql;
 ----
 CREATE OR REPLACE FUNCTION bmi(user_id_0 INTEGER, date_0 DATE)
   RETURNS NUMERIC AS $$
@@ -110,15 +157,35 @@ DECLARE
 
 BEGIN
   IF date_0 IS NULL
-  THEN date_0 = CURRENT_DATE; END IF;
+  	THEN date_0 = CURRENT_DATE; END IF;
   weight_0 = get_weight(user_id_0, date_0);
   height_0 = get_heigth(user_id_0, date_0) / 100;
+  IF height_0 IS NULL OR weight_0 IS NULL 
+	THEN RAISE NOTICE 'NO DATA PROVIDED'; 
+	RETURN NULL; END IF; 
   RETURN ROUND(weight_0 / (height_0 * height_0), 2);
 END;
 $$
 LANGUAGE plpgsql;
 
+----
+CREATE OR REPLACE FUNCTION bmi_description(bmi NUMERIC)
+  RETURNS VARCHAR AS $$
+DECLARE
 
+BEGIN
+	IF bmi<15 THEN RETURN 'very severely underweight';
+ 	ELSIF bmi<16 THEN RETURN 'severely underweight';
+	ELSIF bmi<18.5 THEN RETURN 'underweight';
+	ELSIF bmi<25 THEN RETURN 'normal';
+	ELSIF bmi<30 THEN RETURN 'obese class I';
+	ELSIF bmi<35 THEN RETURN 'obese class II';
+	ELSIF bmi<40 THEN RETURN 'obese class III';
+	ELSIF bmi<45 THEN RETURN 'obese class IV';
+	ELSE RETURN 'obese class V'; END IF;
+END;
+$$
+LANGUAGE plpgsql;
 ----
 CREATE OR REPLACE FUNCTION height_weight_changes()
   RETURNS TABLE(user_id INTEGER, start_time TIMESTAMP, end_time TIMESTAMP, hight_change NUMERIC, weight_change NUMERIC) AS
@@ -171,6 +238,7 @@ CREATE OR REPLACE VIEW user_min_max_heartrate(user_id, min, max)
 
 
 ----
+DROP FUNCTION IF EXISTS heartrate_session_type(INTEGER, INTEGER);
 CREATE OR REPLACE FUNCTION heartrate_session_type(user_idd INTEGER, session_idd INTEGER)
   RETURNS VARCHAR AS
 $$
@@ -212,20 +280,26 @@ $$
 LANGUAGE plpgsql;
 
 ----
+DROP FUNCTION IF EXISTS timetable(INTEGER,DATE) CASCADE;
 CREATE OR REPLACE FUNCTION timetable(user_idd INTEGER, day DATE)
   RETURNS TABLE(session_id INTEGER, name VARCHAR, start_time TIMESTAMP, end_time TIMESTAMP, distance NUMERIC, description VARCHAR) AS
 $$
 SELECT
-  name, s.session_id, s.start_time, s.end_time, distance, description
+   s.session_id, name, s.start_time, s.end_time, distance, description
 FROM user_session us
   JOIN sessions s ON us.session_id = s.session_id
   JOIN activities a ON s.activity_id = a.activity_id
-WHERE user_id = user_idd AND s.start_time::DATE = day;
+WHERE user_id = user_idd AND s.start_time::DATE = day OR s.end_time::DATE = day
+UNION
+SELECT NULL,'spanie', start_time, end_time, NULL, NULL
+FROM sleep 
+WHERE user_id = user_idd AND start_time::DATE = day OR end_time::DATE = day;
 $$
 LANGUAGE sql;
 
 
 ----
+DROP FUNCTION IF EXISTS get_my_med(INTEGER,DATE) CASCADE;
 CREATE OR REPLACE FUNCTION get_my_med(id INTEGER, day DATE)
   RETURNS CHARACTER VARYING[] AS
 $$
@@ -253,6 +327,7 @@ CREATE OR REPLACE VIEW activities_meds
       JOIN activities a ON s.activity_id = a.activity_id;
 
 ----
+DROP FUNCTION IF EXISTS get_best_stuff(INTEGER) CASCADE;
 CREATE OR REPLACE FUNCTION get_best_stuff(act_id INTEGER)
   RETURNS TABLE(medications CHARACTER VARYING[],avg_result NUMERIC) AS
 $$
@@ -339,6 +414,47 @@ END;
 $$
 LANGUAGE plpgsql;
 
+
+----
+DROP FUNCTION IF EXISTS section_ranking(INTEGER,DATE,DATE) CASCADE;
+CREATE OR REPLACE FUNCTION section_ranking(sectionid INTEGER, start_0 DATE, end_0 DATE)
+ RETURNS TABLE(user_id INT, name varchar, attendance bigint,distance numeric,kcal numeric,injured bool) AS $$
+
+ SELECT user_id,
+(
+	SELECT CONCAT(name,' ',surname) 
+		FROM users 
+		WHERE us.user_id=user_id
+),
+(
+	SELECT CASE WHEN COUNT(*)>0 
+		THEN COUNT(*)/(SELECT COUNT(*) FROM sessions WHERE section_id=sectionid AND start_time::DATE<= end_0 AND end_time::DATE >= start_0) ELSE 0 END 
+	FROM user_session 
+		LEFT JOIN sessions s USING (session_id) 
+	WHERE us.user_id=user_id AND section_id=sectionid AND start_time::DATE<= end_0 AND end_time::DATE >= start_0
+),
+(
+	SELECT SUM(distance) 
+		FROM user_session 
+			LEFT JOIN sessions USING (session_id) 
+		WHERE user_id=us.user_id AND start_time::DATE<= end_0 AND end_time::DATE >= start_0
+),
+kcal(user_id,start_0::TIMESTAMP,(end_0+INTERVAL '1 day')::TIMESTAMP),
+CASE 
+	WHEN (
+		SELECT user_id 
+			FROM injuries 
+			WHERE user_id=us.user_id AND "date"+duration>=start_0 AND "date"<=end_0
+		) IS NOT NULL 
+	THEN true 
+	ELSE false 
+END
+
+ FROM user_section us WHERE section_id=sectionid AND start_time::DATE<= end_0 AND COALESCE(end_time,start_0)::DATE >= start_0 ;
+
+$$
+LANGUAGE sql;
+
 ----
 CREATE VIEW sections_info AS
   SELECT
@@ -351,11 +467,25 @@ CREATE VIEW sections_info AS
   JOIN activities a ON s.activity_id = a.activity_id
   ORDER BY s.section_id;
 
-----
-/*CREATE OR REPLACE view get_section;
 
-SELECT
-  *
-FROM user_section us
-JOIN sessions s ON s.section_id = us.section_id*/
+
+----
+CREATE OR REPLACE FUNCTION time_interval_check(id INT, start TIMESTAMP, endd TIMESTAMP, tab TEXT)
+  RETURNS BOOL AS $f$
+BEGIN
+  IF (
+       SELECT t.user_id
+       FROM (SELECT *
+             FROM get_table(tab)) t
+       WHERE t.user_id = id AND 
+         t.start_time < endd AND t.end_time>start
+	ORDER BY 1 LIMIT 1
+       
+     ) IS NOT NULL
+  THEN RETURN FALSE; END IF;
+
+  RETURN TRUE;
+END;
+$f$
+LANGUAGE plpgsql;
 

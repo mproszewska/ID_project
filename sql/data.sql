@@ -83,10 +83,7 @@ COPY accidents ("date") FROM stdin;
 2016-12-31 23:51:00
 2017-03-02 10:51:00
 \.
-COPY injuries (user_id, accident_id, description,duration) FROM stdin;
-1	2	złamana noga	3 weeks
-5	1	złamana ręka	10 days
-\.
+
 COPY user_section (user_id, section_id,start_time) FROM stdin;
 1	1	2017-06-06
 2	1	2017-06-06

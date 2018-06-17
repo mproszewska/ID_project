@@ -4,12 +4,12 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="450.0" prefWidth="600.0" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.Controller.LogInViewController">
+<AnchorPane prefHeight="450.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.Controller.LogInViewController">
    <children>
       <Button layoutX="53.0" layoutY="392.0" mnemonicParsing="false" onAction="#setReturnButton" text="RETURN" />
       <Button layoutX="449.0" layoutY="392.0" mnemonicParsing="false" onAction="#handleApply" text="APPLY" />
-      <TextField fx:id="textFieldDatabase" layoutX="215.0" layoutY="83.0" promptText="Database Name" />
-      <TextField fx:id="textFieldPassword" layoutX="215.0" layoutY="123.0" promptText="Password" />
-      <TextField fx:id="textFieldURL" layoutX="215.0" layoutY="163.0" promptText="URL" />
+      <TextField fx:id="textFieldDatabase" layoutX="215.0" layoutY="171.0" promptText="Database Name" />
+      <TextField fx:id="textFieldPassword" layoutX="215.0" layoutY="212.0" promptText="Password" />
+      <TextField fx:id="textFieldURL" layoutX="215.0" layoutY="252.0" promptText="URL" />
    </children>
 </AnchorPane>

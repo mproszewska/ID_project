@@ -1,0 +1,40 @@
+funkcje użytkownika: 
+
+	kcal_during_session(userid INTEGER, sessionid INTEGER)
+	  RETURNS NUMERIC
+
+	bmi(user_id_0 INTEGER, date_0 DATE)
+	  RETURNS NUMERIC
+
+	 bmi_description(bmi NUMERIC)
+	  RETURNS VARCHAR
+
+	timetable(user_idd INTEGER, day DATE)
+		RETURNS TABLE(session_id INTEGER, name VARCHAR, start_time TIMESTAMP, end_time TIMESTAMP, distance NUMERIC, description VARCHAR)
+
+	get_my_med(id INTEGER, day DATE)
+	  RETURNS CHARACTER VARYING[]
+
+	 heartrate_session_type(user_idd INTEGER, session_idd INTEGER)
+	  	RETURNS VARCHAR
+
+
+ogólne:
+
+	 (view wymagaja jedynie SELECT * FROM view_name)
+
+	 VIEW best_medication_sets(activity, medication_set, result)
+
+	 VIEW months_weight_differences(month, difference_avg)
+
+	 VIEW best_sleep_time(activity_name, sleep_time, result_avg)
+
+	 VIEW sections_info
+
+	 section_ranking(sectionid INTEGER, start_0 DATE, end_0 DATE)
+	 	RETURNS TABLE(user_id INT, name varchar, attendance bigint, distance numeric, kcal numeric, injured bool)
+
+
+
+
+

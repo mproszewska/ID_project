@@ -47,15 +47,14 @@ public class UserSections {
         try (PrintWriter out = new PrintWriter("sections.sql")) {
             out.println("COPY user_section (user_id, section_id,start_time) FROM stdin;");
             for (int j = 4; j <= users; j++) {
-                Integer first = random.nextInt(11)+2;
-                Integer second = random.nextInt(11)+2;
-                list.get(first-1).people.add(j);
-                list.get(second-1).people.add(j);
-                while(second.equals(first))
-                    second = random.nextInt(11)+2;
+                Set<Integer> sections = new HashSet<>();
+                for (int i = 0; i < random.nextInt(5)+2; i++)
+                    sections.add(random.nextInt(sectionsNumber-2)+2);
 
-                out.println(j + "\t" + first + "\t" + fmt.print(startTime.minusDays(random.nextInt(1000))));
-                out.println(j + "\t" + second + "\t" + fmt.print(startTime.minusDays(random.nextInt(1000))));
+                for (Integer section : sections){
+                    list.get(section).add(j);
+                    out.println(j + "\t" + section + "\t" + fmt.print(startTime.minusDays(random.nextInt(1000))));
+                }
             }
             out.println("\\.");
         }
