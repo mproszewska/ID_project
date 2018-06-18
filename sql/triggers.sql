@@ -115,21 +115,21 @@ BEGIN
 u_age = get_age(NEW.user_id,NEW."date");
 u_sex = (SELECT sex FROM users WHERE user_id=NEW.user_id);
 
-IF u_sex = 'm' AND (u_age*0.2017)-(NEW.weight *0.09036)+min_heartrate(u_age)-55.0969<=0 
+IF u_sex = 'm' AND (u_age*0.2017)-(NEW.weight *0.09036)+(min_heartrate(u_age)* 0.6309)-55.0969<=0 
 	THEN RAISE NOTICE 'WRONG WEIGHT TO AGE RATIO'; 
 	RETURN NULL; END IF;
-IF u_sex = 'k' AND (u_age*0.074)-(NEW.weight *0.05741)+min_heartrate(u_age)-20.4022<=0
+IF u_sex = 'k' AND (u_age*0.074)-(NEW.weight *0.05741)+(min_heartrate(u_age)* 0.4472)-20.4022<=0
 	THEN RAISE NOTICE 'WRONG WEIGHT TO AGE RATIO';
 	RETURN NULL; END IF;
 IF (NEW.weight*10000)/(NEW.height*NEW.height) not between 10 and 50
 	THEN RAISE NOTICE 'WRONG HEIGHT TO WEIGHT RATIO';
 	RETURN NULL; END IF;
 max_height = (SELECT MAX(height) FROM height_weight WHERE user_id=NEW.user_id AND "date"<NEW."date");
-if max_height IS NOT NULL AND (max_height>NEW.height)
+if max_height IS NOT NULL AND (max_height-2>NEW.height)
 	THEN RAISE NOTICE 'TOO SHORT';
 	RETURN NULL; END IF;
 min_height = (SELECT MIN(height) FROM height_weight WHERE user_id=NEW.user_id AND "date">NEW."date");
-if min_height IS NOT NULL AND (min_height<NEW.height)
+if min_height IS NOT NULL AND (min_height+2<NEW.height)
 	THEN RAISE NOTICE 'TOO HIGH';
 	RETURN NULL; END IF;
 RETURN NEW;
