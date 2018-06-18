@@ -10,7 +10,7 @@ funkcje użytkownika:
 	  RETURNS VARCHAR
 
 	timetable(user_idd INTEGER, day DATE)
-		RETURNS TABLE(session_id INTEGER, name VARCHAR, start_time TIMESTAMP, end_time TIMESTAMP, distance NUMERIC, description VARCHAR)
+		RETURNS TABLE(session_id INTEGER, name VARCHAR, start_time TIMESTAMP, end_time TIMESTAMP,  description VARCHAR, "with" text[])
 
 	get_my_med(id INTEGER, day DATE)
 	  RETURNS CHARACTER VARYING[]
@@ -19,9 +19,14 @@ funkcje użytkownika:
 	  	RETURNS VARCHAR
 	
 	find_section(user_id INTEGER, "date" DATE, activity_id INTEGER)
+		 RETURNS TABLE(section_id INTEGER, name VARCHAR)  
 	
 	kcal(user_id INTEGER, start_time TIMESTAMP, end_time TIMESTAMP)
-
+		RETURNS NUMERIC
+		
+	height_weight_changes()
+  RETURNS TABLE(user_id INTEGER, start_time TIMESTAMP, end_time TIMESTAMP, hight_change NUMERIC, weight_change NUMERIC)
+		
 ogólne:
 
 	 (view wymagaja jedynie SELECT * FROM view_name)
