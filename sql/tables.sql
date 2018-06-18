@@ -80,7 +80,7 @@ CREATE TABLE injuries (
 
 CREATE INDEX idx_injuries_user_id ON injuries ( user_id );
 
-ALTER TABLE injuries ADD CONSTRAINT cns_injuries CHECK ( "date" <= CURRENT_TIMESTAMP );
+ALTER TABLE injuries ADD CONSTRAINT cns_injuries CHECK ( "start_time" <= CURRENT_TIMESTAMP );
 
 DROP TABLE IF EXISTS sections CASCADE;
 CREATE TABLE sections ( 

@@ -298,21 +298,25 @@ CREATE OR REPLACE FUNCTION timetable(user_idd INTEGER, day DATE)
   RETURNS TABLE(session_id INTEGER, name VARCHAR, start_time TIMESTAMP, end_time TIMESTAMP,  description VARCHAR, "with" text[]) AS
 $$
 SELECT
-   s.session_id, name, s.start_time, s.end_time, CONCAT('Dystans: ',(select distance from user_session where user_id=user_idd and session_id=us.session_id),' ',description), (select ARRAY(select concat(surname,' ',name) from users left join user_session using(user_id)where session_id=us.session_id and user_id !=user_idd))
+   s.session_id, name, s.start_time, s.end_time, 
+CASE WHEN distance IS NOT NULL THEN 
+CONCAT('Dystans: ',(SELECT distance FROM user_session WHERE user_id=user_idd AND session_id=us.session_id),' ',description) ELSE description END,
+
+ (SELECT ARRAY(SELECT CONCAT(surname,' ',name) FROM users LEFT JOIN user_session USING(user_id)where session_id=us.session_id AND user_id !=user_idd))
 FROM user_session us
   JOIN sessions s ON us.session_id = s.session_id
   JOIN activities a ON s.activity_id = a.activity_id
-WHERE user_id = user_idd AND s.start_time::DATE = day OR s.end_time::DATE = day
+WHERE user_id = user_idd AND s.start_time::DATE <= day AND s.end_time::DATE >= day
 UNION
 SELECT NULL,'spanie', start_time, end_time, NULL,NULL
 FROM sleep 
-WHERE user_id = user_idd AND start_time::DATE = day OR end_time::DATE = day
+WHERE user_id = user_idd AND start_time::DATE <= day AND end_time::DATE >= day
 UNION
 SELECT NULL,'kontuzja', start_time, end_time, description,NULL
 FROM injuries 
 WHERE user_id = user_idd AND start_time::DATE = day
 UNION
-SELECT NULL,'badanie', NULL, NULL, CONCAT('Wynik badan: wzrost: ',height,' waga: ',weight),NULL
+SELECT NULL,'badanie', NULL, NULL, CONCAT('Wynik badan: wzrost: ',height,', waga: ',weight),NULL
 FROM height_weight 
 WHERE user_id = user_idd AND "date" = day
 UNION
@@ -324,7 +328,7 @@ SELECT NULL,'odejscie od sekcji', start_time, NULL, CONCAT('Nazwa sekcji: ',name
 FROM sections LEFT JOIN user_section USING(section_id)
 WHERE user_id = user_idd AND end_time = day
 UNION
-SELECT NULL,'leki', "date", NULL, CONCAT('Nazwa leku: ',name,'Porcja: ',portion),NULL
+SELECT NULL,'leki', "date", NULL, CASE WHEN portion is not null THEN CONCAT('Nazwa leku: ',name,'Porcja: ',portion) ELSE CONCAT('Nazwa leku: ',name) END,NULL
 FROM medications LEFT JOIN user_medication USING(medication_id)
 WHERE user_id = user_idd AND "date"::DATE = day;
 $$
@@ -445,6 +449,7 @@ CREATE OR REPLACE FUNCTION find_section(userid INTEGER, start_0 DATE,activityid 
 			WHERE user_id=userid AND start_time<=start_0 AND coalesce(end_time,start_0)>=start_0) AND coalesce(min_age,get_age(userid,start_0))<=get_age(userid,start_0) 
 			AND coalesce(max_age,get_age(userid,start_0))>=get_age(userid,start_0) AND
 			(select count(*) FROM user_section WHERE start_time<=start_0 AND coalesce(end_time,start_0)>=start_0 )<coalesce(max_members,1000000) 
+			AND (SELECT sex FROM users where user_id=userid) = COALESCE(sex,(SELECT sex FROM users where user_id=userid))
 			AND (section_id IN (
 				SELECT section_id 
 					FROM sections 
@@ -469,10 +474,10 @@ CREATE OR REPLACE FUNCTION find_section(userid INTEGER, start_0 DATE,activityid 
 							WHERE start_time<=start_0 AND coalesce(end_time,start_0)>=start_0 
 							AND user_id IN (SELECT user_id FROM user_session WHERE session_id IN (SELECT session_id FROM user_session WHERE user_id=userid)))
 			 limit 5))
-
+GROUP BY section_id
 ORDER BY ((SELECT coalesce(count(*),0) 
 		FROM user_section 
-		WHERE start_time<=start_0 AND coalesce(end_time,start_0)>=start_0 )-min_members/(max_members-min_members)) 
+		WHERE start_time<=start_0 AND coalesce(end_time,start_0)>=start_0 )-coalesce(min_members,0)/(coalesce(max_members,count(*)*2)-coalesce(min_members,0))) 
 		LIMIT 5
 ;
 
