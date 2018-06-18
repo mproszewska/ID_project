@@ -250,6 +250,7 @@ DECLARE
   last_age NUMERIC;
   result NUMERIC;
   t timestamp;
+r numeric;
 BEGIN
   IF end_0<=start_0 THEN RETURN 0.00; END IF;
   IF end_0 IS NULL THEN end_0  = CURRENT_TIMESTAMP::timestamp without time zone; END IF;
@@ -289,12 +290,13 @@ last_weight = weight_0;
 	IF seconds>0 THEN
 	    avg_heartrate_0 = heartrates_0 / seconds;
 		  IF sex_0 = 'm' THEN
-		  		result = result + ((last_age * 0.2017) - (last_weight * 0.09036) + (avg_heartrate_0 * 0.6309) - 55.0969) * (seconds / 60) / 4.184;
+		  		r= ((last_age * 0.2017) - (last_weight * 0.09036) + (avg_heartrate_0 * 0.6309) - 55.0969) * (seconds / 60) / 4.184;
 		  	ELSE 
-				result = result + ((last_age * 0.074) - (last_weight  * 0.05741) + (avg_heartrate_0 * 0.4472) - 20.4022) * (seconds / 60) / 4.184; 
+				r=((last_age * 0.074) - (last_weight  * 0.05741) + (avg_heartrate_0 * 0.4472) - 20.4022) * (seconds / 60) / 4.184; 
 			END IF;
 	   seconds = 0;
 	   heartrates_0=0;
+if r>=0 then result=result+r; end if;
 	   END IF;
    END IF;	
   END LOOP;
@@ -583,7 +585,7 @@ CREATE OR REPLACE FUNCTION section_ranking(sectionid INTEGER, start_0 DATE, end_
 get_age(user_id,start_0),
 (
 	SELECT CASE WHEN COUNT(*)>0 
-		THEN coalesce(COUNT(*),0)/(SELECT coalesce(COUNT(*),1) FROM sessions WHERE section_id=sectionid AND start_time::DATE<= end_0 AND end_time::DATE >= start_0) ELSE 0 END 
+		THEN COUNT(*)/(SELECT COUNT(*) FROM sessions WHERE section_id=sectionid AND start_time::DATE<= end_0 AND end_time::DATE >= start_0) ELSE 0 END 
 	FROM user_session 
 		LEFT JOIN sessions s USING (session_id) 
 	WHERE us.user_id=user_id AND section_id=sectionid AND start_time::DATE<= end_0 AND end_time::DATE >= start_0
@@ -814,21 +816,21 @@ BEGIN
 u_age = get_age(NEW.user_id,NEW."date");
 u_sex = (SELECT sex FROM users WHERE user_id=NEW.user_id);
 
-IF u_sex = 'm' AND (u_age*0.2017)-(NEW.weight *0.09036)+min_heartrate(u_age)-55.0969<=0 
+IF u_sex = 'm' AND (u_age*0.2017)-(NEW.weight *0.09036)+min_heartrate(u_age)*0.6+55.0969<=0 
 	THEN RAISE NOTICE 'WRONG WEIGHT TO AGE RATIO'; 
 	RETURN NULL; END IF;
-IF u_sex = 'k' AND (u_age*0.074)-(NEW.weight *0.05741)+min_heartrate(u_age)-20.4022<=0
+IF u_sex = 'k' AND (u_age*0.074)-(NEW.weight *0.05741)+min_heartrate(u_age)*0.4+40.4022<=0
 	THEN RAISE NOTICE 'WRONG WEIGHT TO AGE RATIO';
 	RETURN NULL; END IF;
 IF (NEW.weight*10000)/(NEW.height*NEW.height) not between 10 and 50
 	THEN RAISE NOTICE 'WRONG HEIGHT TO WEIGHT RATIO';
 	RETURN NULL; END IF;
 max_height = (SELECT MAX(height) FROM height_weight WHERE user_id=NEW.user_id AND "date"<NEW."date");
-if max_height IS NOT NULL AND (max_height>NEW.height)
+if max_height IS NOT NULL AND (max_height-2>NEW.height)
 	THEN RAISE NOTICE 'TOO SHORT';
 	RETURN NULL; END IF;
 min_height = (SELECT MIN(height) FROM height_weight WHERE user_id=NEW.user_id AND "date">NEW."date");
-if min_height IS NOT NULL AND (min_height<NEW.height)
+if min_height IS NOT NULL AND (min_height+2<NEW.height)
 	THEN RAISE NOTICE 'TOO HIGH';
 	RETURN NULL; END IF;
 RETURN NEW;
@@ -960,7 +962,7 @@ IF  maxage IS NOT NULL AND NEW.end_time IS NOT NULL AND get_age(NEW.user_id,NEW.
 	THEN RAISE NOTICE 'WRONG MAXIMAL AGE'; 
 	RETURN NULL;END IF;
 
-IF  maxage IS NOT NULL AND get_age(NEW.user_id,CURRENT_DATE) > maxage
+IF  maxage IS NOT NULL AND NEW.end_time IS NULL
 	THEN RAISE NOTICE 'WRONG MAXIMAL AGE'; 
 	RETURN NULL;END IF;
 
@@ -995,6 +997,10 @@ $f$ LANGUAGE plpgsql;
 DROP TRIGGER IF EXISTS sleep_trigger ON sleep;
 CREATE TRIGGER sleep_trigger BEFORE INSERT OR UPDATE ON sleep
 FOR EACH ROW EXECUTE PROCEDURE sleep_check();
+
+DROP TRIGGER IF EXISTS heartrates_trigger ON heartrates;
+CREATE TRIGGER heartrates_trigger BEFORE INSERT OR UPDATE ON heartrates
+FOR EACH ROW EXECUTE PROCEDURE heartrates_check();
 
 DROP TRIGGER IF EXISTS injuries_trigger ON injuries;
 CREATE TRIGGER injuries_trigger BEFORE INSERT OR UPDATE ON injuries
@@ -1112,4 +1118,12 @@ CREATE OR REPLACE RULE trainer_session_d_1 AS ON DELETE TO user_session WHERE OL
                 UPDATE sessions SET trainer_id=NULL WHERE session_id = OLD.session_id
         );
 
-
+CREATE OR REPLACE FUNCTION create_session(userid INTEGER,activity_id INTEGER, startt TIMESTAMP,endt TIMESTAMP,descr VARCHAR(300),dist numeric,trainer integer,section integer) RETURNS VOID AS $f$
+declare
+sessionid integer;
+BEGIN
+sessionid = coalesce((select min(session_id)+1 from sessions where session_id+1 not in (select session_id from sessions)),1);
+insert into sessions values(sessionid,activity_id,startt,endt,descr,trainer,section);
+insert into user_session values(userid,sessionid,dist);
+END;
+$f$ LANGUAGE plpgsql;

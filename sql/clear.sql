@@ -25,7 +25,8 @@
  DROP FUNCTION IF EXISTS time_interval_check(integer, timestamp without time zone, timestamp without time zone, text) CASCADE;
  DROP FUNCTION IF EXISTS timetable(integer, date, date) CASCADE ;
  DROP FUNCTION IF EXISTS user_section_check() CASCADE;
- DROP FUNCTION IF EXISTS user_session_check() CASCADE;                     
+ DROP FUNCTION IF EXISTS user_session_check() CASCADE;      
+ DROP FUNCTION IF EXISTS create_session( INTEGER, INTEGER,  TIMESTAMP, TIMESTAMP, VARCHAR(300), numeric, integer, integer) CASCADE;      
 
  DROP TABLE IF EXISTS "users" CASCADE;
  DROP TABLE IF EXISTS "sleep" CASCADE;
