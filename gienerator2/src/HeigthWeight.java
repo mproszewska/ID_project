@@ -19,7 +19,7 @@ public class HeigthWeight {
             for (int j = 1; j <= users; j++) {
                 DateTime day = new DateTime(startTime);
                 int height = 150 + random.nextInt(60);
-                int weight = 40 + random.nextInt(140);
+                int weight = (height-100)*(80+random.nextInt(40))/100;
                 int maks = weight*(105 + random.nextInt(20))/100;
                 int mini = weight*(95 - random.nextInt(20))/100;
                 while (!day.isAfter(today)){

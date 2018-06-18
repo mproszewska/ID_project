@@ -9,13 +9,13 @@ Dzwonisław	Krzakiel	m	1989-02-20
 Brzęczysław	Brząk	m	1990-12-03
 Brokułacy	Falafel	m	1967-03-20
 Mrokusław	Ptrzmiel	m	1988-04-20
-Miceksy	Szekeres	m	1945-01-04
+Miceksy	Szekeres	m	19-01-04
 Iwonicja	Bajtocka	k	1945-04-28
 Bieżysław	Popędny	m	1989-05-20
 Sławomir	Przytańczuk	m	1989-06-21
 Jędrula	Drań	m	1998-08-21
 Keri	Brennan	k	1990-03-28
-Cameron	Bass	k	2001-07-31
+Cameron	Bass	k	1990-07-31
 Roberta	Morse	k	1992-04-6
 Colby	Boone	m	1987-08-15
 Cornelius	Herring	m	1983-07-3
@@ -62,7 +62,7 @@ ABCAA
 
 COPY sections (activity_id, name,city,trainer_id,min_age,max_age) FROM stdin;
 11	Weekendowy Klub Przyjaciół ID	Kraków	3	19	23
-11	TCS UJ	Niezdalandia	9	19	35
+11	TCS UJ	Niezdalandia	9	19	40
 1	Klub Bieżnika	Bieżanów	10	\N	\N
 9	Krokietnicy	Kraków	4	\N	\N
 12	Golonka&Beer	Tłuszcz	3	\N	\N
@@ -75,14 +75,6 @@ COPY sections (activity_id, name,city,trainer_id,min_age,max_age) FROM stdin;
 \.
 
 
-COPY accidents ("date") FROM stdin;
-2016-07-12 10:50:00
-2016-04-06 16:00:00
-2016-05-06 18:00:00
-2016-12-31 23:51:00
-2017-03-02 10:51:00
-\.
-
 COPY user_section (user_id, section_id,start_time) FROM stdin;
 1	1	2017-06-06
 2	1	2017-06-06
@@ -90,5 +82,24 @@ COPY user_section (user_id, section_id,start_time) FROM stdin;
 1	2	2017-06-06
 2	2	2017-06-06
 3	2	2017-06-06
+\.
+
+COPY injuries (user_id, start_time, end_time, description) FROM stdin;
+10	2018-01-01	2018-02-01	skolioza
+1	2018-01-07	2018-03-06	inżynierioza
+2	2018-01-08	2018-01-20	grypa żołądkowa gorzka
+3	2018-03-09	2018-03-11	odgromnienie
+7	2018-01-10	2018-02-11	apoteoza głupoty
+20	2018-01-11	2018-01-17	szprycha w rowerze
+19	2018-02-12	2018-02-15	nadprędkość
+11	2018-03-13	2018-03-18	wyrzucenie z butów
+17	2018-03-14	2018-03-20	katar jesienny
+1	2018-04-15	2018-04-21	rżączka
+4	2018-04-16	2018-04-22	zagłupienie wtórne
+5	2018-05-17	2018-05-23	weneric collections
+6	2018-03-18	2018-03-24	zwichnięcie trzustki
+7	2018-01-17	2018-01-25	wszetecznica powrzechna
+8	2018-02-16	2018-02-26	katzenjammer
+10	2018-02-15	2018-02-28	prawoskręt kiszek
 \.
 

@@ -960,7 +960,7 @@ IF  maxage IS NOT NULL AND NEW.end_time IS NOT NULL AND get_age(NEW.user_id,NEW.
 	THEN RAISE NOTICE 'WRONG MAXIMAL AGE'; 
 	RETURN NULL;END IF;
 
-IF  maxage IS NOT NULL AND NEW.end_time IS NULL
+IF  maxage IS NOT NULL AND get_age(NEW.user_id,CURRENT_DATE) > maxage
 	THEN RAISE NOTICE 'WRONG MAXIMAL AGE'; 
 	RETURN NULL;END IF;
 
@@ -995,10 +995,6 @@ $f$ LANGUAGE plpgsql;
 DROP TRIGGER IF EXISTS sleep_trigger ON sleep;
 CREATE TRIGGER sleep_trigger BEFORE INSERT OR UPDATE ON sleep
 FOR EACH ROW EXECUTE PROCEDURE sleep_check();
-
-DROP TRIGGER IF EXISTS heartrates_trigger ON heartrates;
-CREATE TRIGGER heartrates_trigger BEFORE INSERT OR UPDATE ON heartrates
-FOR EACH ROW EXECUTE PROCEDURE heartrates_check();
 
 DROP TRIGGER IF EXISTS injuries_trigger ON injuries;
 CREATE TRIGGER injuries_trigger BEFORE INSERT OR UPDATE ON injuries
