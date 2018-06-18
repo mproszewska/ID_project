@@ -41,6 +41,9 @@ ogólne:
 
 	 section_ranking(sectionid INTEGER, start_0 DATE, end_0 DATE)
 	 	RETURNS TABLE(user_id INT, name varchar, attendance bigint, distance numeric, kcal numeric, injured bool)
+		
+	VIEW individual_session
+	VIEW section_session
 
 
 
