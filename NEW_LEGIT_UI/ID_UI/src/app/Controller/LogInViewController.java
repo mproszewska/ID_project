@@ -1,8 +1,10 @@
 package app.Controller;
 
+import app.DB.PostgreSQLJDBC;
 import app.Model.Activity;
 import app.Main;
 import app.DB.QueriesMachine;
+import app.Model.Alerts;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -38,8 +40,18 @@ public class LogInViewController implements Initializable {
         Main.changeDatabase("piotrhelm"); //(textFieldDatabase.getText());
         Main.changePassword(textFieldPassword.getText());
         Main.changeURL("jdbc:postgresql://localhost:5432/piotrhelm"); ////(textFieldURL.getText());
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("../View/Main.fxml"));
-        Main.changeScene(actionEvent,loader,"Main");
+        PostgreSQLJDBC sql = new PostgreSQLJDBC();
+        boolean access = false;
+        try {
+            access = sql.tryDB();
+        } catch (Throwable e) {
+            Alerts.alertCustom("Connection Error", "Result: ",e.getMessage());
+        }
+
+        if(access) {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("../View/Main.fxml"));
+            Main.changeScene(actionEvent, loader, "Main");
+        }
     }
 
     @Override

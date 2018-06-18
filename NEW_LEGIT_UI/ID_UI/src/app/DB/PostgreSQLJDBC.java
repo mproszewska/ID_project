@@ -25,7 +25,23 @@ public class PostgreSQLJDBC {
         this.password = password;
     }
 
-    PostgreSQLJDBC(){}
+    public PostgreSQLJDBC(){}
+
+    public boolean tryDB() throws SQLException, ClassNotFoundException {
+        Connection c = null;
+        Statement stmt = null;
+        try {
+            Class.forName("org.postgresql.Driver");
+            c = DriverManager.getConnection(database, username, password);
+            c.setAutoCommit(false);
+            System.out.println("Opened database successfully");
+            c.close();
+        } catch ( Exception e ) {
+            System.err.println( e.getClass().getName()+": "+ e.getMessage() );
+            throw e;
+        }
+        return true;
+    }
 
     private void insert(String table, String signature, Object... objects) throws SQLException, ClassNotFoundException {
         Connection c = null;

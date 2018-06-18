@@ -14,10 +14,9 @@
         <Text layoutX="145.0" layoutY="64.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Choose what you want to delete." textAlignment="CENTER" wrappingWidth="310.9999945163727" />
         <Text fx:id="text" layoutX="95.0" layoutY="192.0" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER" wrappingWidth="410.0000023841858" />
         <Text fx:id="textinfo" layoutX="95.0" layoutY="160.0" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER" wrappingWidth="410.0000023841858" />
-        <TextField fx:id="textF11" layoutX="64.0" layoutY="245.0" prefHeight="26.0" prefWidth="134.0" />
-        <TextField fx:id="textF12" layoutX="233.0" layoutY="245.0" prefHeight="26.0" prefWidth="134.0" />
-        <TextField fx:id="textF13" layoutX="409.0" layoutY="245.0" prefHeight="26.0" prefWidth="134.0" />
-        <TextField fx:id="textF21" layoutX="166.0" layoutY="295.0" prefHeight="26.0" prefWidth="134.0" />
-        <TextField fx:id="textF22" layoutX="339.0" layoutY="295.0" prefHeight="26.0" prefWidth="134.0" />
+        <TextField fx:id="textF11" layoutX="127.0" layoutY="245.0" prefHeight="26.0" prefWidth="134.0" />
+        <TextField fx:id="textF12" layoutX="339.0" layoutY="245.0" prefHeight="26.0" prefWidth="134.0" />
+        <TextField fx:id="textF13" layoutX="339.0" layoutY="295.0" prefHeight="26.0" prefWidth="134.0" />
+        <TextField fx:id="textF21" layoutX="127.0" layoutY="295.0" prefHeight="26.0" prefWidth="134.0" />
     </children>
 </AnchorPane>

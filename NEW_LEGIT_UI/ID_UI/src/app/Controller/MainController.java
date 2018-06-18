@@ -5,7 +5,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
 
 import java.io.IOException;
 import java.net.URL;
@@ -48,7 +47,7 @@ public class MainController implements Initializable {
 
     public void showFunctions(ActionEvent actionEvent) throws IOException {
         if(access) {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("../View/FunctionsView.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("../View/ViewsView.fxml"));
             Main.changeScene(actionEvent, loader, "FunctionsView");
         } else {
             alert();

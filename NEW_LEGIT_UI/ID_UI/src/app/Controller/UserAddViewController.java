@@ -12,23 +12,23 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextFlow;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.ResourceBundle;
 
 /**
- * Created by piotrhelm on 04.06.18.
+ * Created by piotrhelm on 18.06.18.
  */
-public class AddViewController implements Initializable {
+public class UserAddViewController implements Initializable{
     @FXML
     private ChoiceBox choiceBox;
 
@@ -51,6 +51,9 @@ public class AddViewController implements Initializable {
     private TextField textF23;
 
     @FXML
+    private TextArea textArea;
+
+    @FXML
     private Text text;
 
     @FXML
@@ -59,8 +62,8 @@ public class AddViewController implements Initializable {
     private String choice;
 
     public void setReturnButton(ActionEvent actionEvent) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("../View/Main.fxml"));
-        Main.changeScene(actionEvent, loader, "Main");
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("../View/UserDetailedView.fxml"));
+        Main.changeScene(actionEvent,loader,"UserDetailedView");
     }
 
     @FXML
@@ -72,13 +75,14 @@ public class AddViewController implements Initializable {
 
         if (choice == null) {
             Alerts.alertCustom("Input Error","Results:","Choose what you want to add.");
+        } else if (choice.equals("session") && FXMLMachine.checkContent(fields, 5)) {
+
+                /*qMachine.query(
+                        "INSERT INTO session()"
+                );*/
         } else if (choice.equals("user") && FXMLMachine.checkContent(fields, 4)) {
             success = true;
-            String query = "INSERT INTO users(name, surname, sex, birthday) VALUES ('" +
-                    fMachine.format(textF11.getText()) + "','" +
-                    fMachine.format(textF12.getText()) + "','" +
-                    textF13.getText().toLowerCase() + "','" +
-                    textF21.getText() + "');";
+            String query = "";
 
             try {
                 qMachine.query(query);
@@ -89,9 +93,7 @@ public class AddViewController implements Initializable {
             ///adding height / weight
         } else if (choice.equals("activity") && FXMLMachine.checkContent(fields, 2)) {
             success = true;
-            String query = "INSERT INTO activities(name, sport) VALUES ('" +
-                    textF11.getText().toLowerCase() + "','" +
-                    textF12.getText() + "');";
+            String query = "";
             try {
                 qMachine.query(query);
             } catch (Throwable e) {
@@ -99,45 +101,19 @@ public class AddViewController implements Initializable {
                 Alerts.alertCustom("Insertion Error", "Results: ", e.getMessage());
             }
         } else if (choice.equals("section") && FXMLMachine.checkContent(fields, 4)) {
-            List<SelectContainer> container = null;
-            String query = "SELECT activity_id FROM activities WHERE name LIKE '" + textF11.getText().toLowerCase() + "';";
-            System.out.println(query);
 
-            try {
-                container = qMachine.select(query, SelectContainer.class);
-            } catch (Throwable e) {
-                Alerts.alert();
-            }
 
-            success = true;
-            String query2 = "INSERT INTO sections(activity_id, trainer_id, name, city, min_members, max_members) VALUES (" +
-                    container.get(0).getAt(0) + "," +
-                    textF12.getText() + ",'" +
-                    fMachine.format(textF13.getText()) + "','" +
-                    fMachine.format(textF21.getText()) + "'," +
-                    textF22.getText() + "," +
-                    textF23.getText() + ");";
-
-            try {
-                qMachine.query(query2);
-            } catch (Throwable e) {
-                success = false;
-                if (container.size() == 0)
-                    Alerts.alertCustom("Insertion Error", "Results: ", "Wrong activity name.");
-                else
-                    Alerts.alertCustom("Insertion Error", "Results: ", e.getMessage());
-            }
         }
 
         if(success) {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("../View/Main.fxml"));
-            Main.changeScene(actionEvent, loader, "Main");
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("../View/UserDetailedView.fxml"));
+            Main.changeScene(actionEvent,loader,"UserDetailedView");
         }
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        choiceBox.getItems().addAll("user", "activity", "section");
+        choiceBox.getItems().addAll("injure", "medication", "session", "sleep", "height_weight");
         List<TextField> fields = new ArrayList<>();
         TextField[] tmp = {textF11, textF12, textF13, textF21, textF22, textF23};
         fields.addAll(Arrays.asList(tmp));
@@ -150,18 +126,36 @@ public class AddViewController implements Initializable {
                 textinfo.setText("Information needed to add record:");
                 FXMLMachine setInfo = new FXMLMachine();
 
-                if (choice.equals("user")) {
-                    text.setText("(name, surname, sex, birthday, height (optional), weight (optional))");
-                    String[] id = {"name", "surname", "sex", "yyyy-mm-dd", "height", "weight"};
+                if (choice.equals("session")) {
+                    text.setText("(activity, start time, end time, description, trainer (optional), section (optional))");
+                    String[] id = {"activity", "start time", "end time", "trainer", "section", "distance"};
                     setInfo.updateFields(fields, Arrays.asList(id));
-                } else if (choice.equals("activity")) {
-                    text.setText("(name, sport)");
-                    String[] id = {"name", "sport"};
+                    textArea.setPromptText("description");
+                    textArea.setDisable(false);
+                } else if (choice.equals("injure")) {
+                    text.setText("(accident, start time, end time)");
+                    String[] id = {"accident", "start time", "end time"};
                     setInfo.updateFields(fields, Arrays.asList(id));
-                } else if (choice.equals("section")) {
-                    text.setText("(sport, trainer, name, city, min members, max members)");
-                    String[] id = {"sport", "trainer", "name", "city", "min members", "max members"};
+                    textArea.setPromptText("");
+                    textArea.setDisable(true);
+                } else if (choice.equals("medication")) {
+                    text.setText("(medication, date, portion)");
+                    String[] id = {"medication", "date", "portion"};
                     setInfo.updateFields(fields, Arrays.asList(id));
+                    textArea.setPromptText("");
+                    textArea.setDisable(true);
+                } else if (choice.equals("sleep")) {
+                    text.setText("(start time, end time)");
+                    String[] id = {"start time", "end time"};
+                    setInfo.updateFields(fields, Arrays.asList(id));
+                    textArea.setPromptText("");
+                    textArea.setDisable(true);
+                } else if (choice.equals("height_weight")) {
+                    text.setText("(height, weight)");
+                    String[] id = {"height", "weight"};
+                    setInfo.updateFields(fields, Arrays.asList(id));
+                    textArea.setPromptText("");
+                    textArea.setDisable(true);
                 }
             }
         });

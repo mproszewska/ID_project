@@ -4,6 +4,7 @@ import app.DB.QueriesMachine;
 import app.Main;
 import app.Model.Alerts;
 import app.Model.FXMLMachine;
+import app.Model.SelectContainer;
 import app.Model.StringFormatMachine;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -45,9 +46,6 @@ public class DeleteViewController implements Initializable{
     private TextField textF21;
 
     @FXML
-    private TextField textF22;
-
-    @FXML
     private Text text;
 
     @FXML
@@ -64,46 +62,71 @@ public class DeleteViewController implements Initializable{
     private void handleApply(ActionEvent actionEvent) throws IOException, SQLException, ClassNotFoundException {
         QueriesMachine qMachine = new QueriesMachine();
         StringFormatMachine fMachine = new StringFormatMachine();
-        TextField[] fields = {textF11, textF12, textF13, textF21, textF22};
+        TextField[] fields = {textF11, textF12, textF13, textF21};
+        boolean success = false;
 
         if(choice == null) {
+            success = false;
             Alerts.alertCustom("Input Error","Results:","Choose what you want to delete.");
-        } else if(choice.equals("session") && FXMLMachine.checkContent(fields,5)) {
-            try {
-                String query = "DELETE FROM ";
-                qMachine.query(query);
-            } catch (Throwable e) {
-                Alerts.alertCustom("Insertion Error", "Results: ", e.getMessage());
-            }
         } else if(choice.equals("user") && FXMLMachine.checkContent(fields,4)) {
            try {
-               String query = "";
+               success = true;
+               String query = "DELETE FROM users " +
+                       "WHERE name LIKE '" + fMachine.format(textF11.getText()) +
+                       "' AND surname LIKE '" + fMachine.format(textF12.getText()) +
+                       "' AND sex LIKE '" + textF13.getText().toLowerCase() +
+                       "' AND birthday = '" + textF21.getText() + "';";
                qMachine.query(query);
            } catch (Throwable e) {
-                Alerts.alertCustom("Insertion Error", "Results: ", e.getMessage());
+               success = false;
+               Alerts.alertCustom("Insertion Error", "Results: ", e.getMessage());
            }
         } else if(choice.equals("activity") && FXMLMachine.checkContent(fields,1)) {
             try {
-                String query = "";
+                success = true;
+                String query = "DELETE FROM activities WHERE name LIKE '" + textF11.getText().toLowerCase() + "';";
                 qMachine.query(query);
             } catch (Throwable e) {
+                success = false;
                 Alerts.alertCustom("Insertion Error", "Results: ", e.getMessage());
             }
         } else if(choice.equals("section") && FXMLMachine.checkContent(fields,4)) {
             try {
-                String query = "";
-                qMachine.query(query);
+                success = true;
+
+                List<SelectContainer> container = null;
+                String query = "SELECT activity_id FROM activities WHERE name LIKE '" + textF11.getText().toLowerCase() + "';";
+                System.out.println(query);
+
+                try {
+                    container = qMachine.select(query, SelectContainer.class);
+                } catch (Throwable e) {
+                    Alerts.alert();
+                }
+
+                String query2 = "DELETE FROM sections " +
+                        "WHERE activity_id = '" + container.get(0).getAt(0) +
+                        "' AND trainer_id = '" + fMachine.format(textF12.getText()) +
+                        "' AND city LIKE '" + fMachine.format(textF13.getText()) +
+                        "' AND name LIKE '" + fMachine.format(textF21.getText()) + "';";
+                qMachine.query(query2);
             } catch (Throwable e) {
+                success = false;
                 Alerts.alertCustom("Insertion Error", "Results: ", e.getMessage());
             }
+        }
+
+        if(success) {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("../View/Main.fxml"));
+            Main.changeScene(actionEvent, loader, "Main");
         }
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        choiceBox.getItems().addAll("user", "session", "activity", "section");
+        choiceBox.getItems().addAll("user", "activity", "section");
         List<TextField> fields = new ArrayList<>();
-        TextField[] tmp = {textF11, textF12, textF13, textF21, textF22};
+        TextField[] tmp = {textF11, textF12, textF13, textF21};
         fields.addAll(Arrays.asList(tmp));
 
         choiceBox.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
@@ -113,12 +136,7 @@ public class DeleteViewController implements Initializable{
 
                 FXMLMachine setInfo = new FXMLMachine();
                 textinfo.setText("Information needed to delete record:");
-
-                if(choice.equals("session")) {
-                    text.setText("(name, surname, activity, start time, end time)");
-                    String[] id = {"name", "surname", "activity", "start time", "end time"};
-                    setInfo.updateFields(fields, Arrays.asList(id));
-                } else if(choice.equals("user")) {
+                if(choice.equals("user")) {
                     text.setText("(name, surname, sex, birthday)");
                     String[] id = {"name", "surname", "sex", "yyyy-mm-dd"};
                     setInfo.updateFields(fields, Arrays.asList(id));

@@ -60,6 +60,7 @@ kurz w kłaczkach
 ABCAA
 \.
 
+<<<<<<< Updated upstream
 COPY sections (activity_id, name,city,trainer_id,min_age) FROM stdin;
 11	Weekendowy Klub Przyjaciół ID	Kraków	3	19
 11	TCS UJ	Niezdalandia	9	19
@@ -72,6 +73,20 @@ COPY sections (activity_id, name,city,trainer_id,min_age) FROM stdin;
 1	AZS AGH	Kraków	7	11
 1	AZS AWF	Warszawa	6	16
 9	AZS UJ	Kraków	2	6
+=======
+COPY sections (activity_id, name,city,trainer_id,min_age,max_age) FROM stdin;
+11	Weekendowy Klub Przyjaciół ID	Kraków	3	19	\N
+11	TCS UJ	Niezdalandia	9	19	\N
+1	Klub Bieżnika	Bieżanów	10	\N	\N
+9	Krokietnicy	Kraków	4	\N	\N
+12	Golonka&Beer	Tłuszcz	3	\N	\N
+12	Samonieżąd Uczniowski	Kraków	12	\N	\N
+12	The Legends	Kraków	11	\N	\N
+2	AZS UJ	Kraków	8	10	\N
+1	AZS AGH	Kraków	7	11	\N
+1	AZS AWF	Warszawa	6	16	\N
+9	AZS UJ	Kraków	2	6	\N
+>>>>>>> Stashed changes
 \.
 
 

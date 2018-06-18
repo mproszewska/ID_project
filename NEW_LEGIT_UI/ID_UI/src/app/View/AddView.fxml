@@ -19,10 +19,8 @@
       <TextField fx:id="textF11" layoutX="64.0" layoutY="245.0" prefHeight="26.0" prefWidth="134.0" />
       <TextField fx:id="textF12" layoutX="233.0" layoutY="245.0" prefHeight="26.0" prefWidth="134.0" />
       <TextField fx:id="textF13" layoutX="409.0" layoutY="245.0" prefHeight="26.0" prefWidth="134.0" />
-      <TextField fx:id="textF21" layoutX="12.0" layoutY="295.0" prefHeight="26.0" prefWidth="134.0" />
-      <TextField fx:id="textF22" layoutX="158.0" layoutY="295.0" prefHeight="26.0" prefWidth="134.0" />
-      <TextField fx:id="textF23" layoutX="304.0" layoutY="295.0" prefHeight="26.0" prefWidth="134.0" />
-      <TextField fx:id="textF24" layoutX="450.0" layoutY="295.0" prefHeight="26.0" prefWidth="134.0" />
-      <TextArea fx:id="textArea" layoutX="163.0" layoutY="350.0" prefHeight="55.0" prefWidth="282.0" />
+      <TextField fx:id="textF21" layoutX="64.0" layoutY="295.0" prefHeight="26.0" prefWidth="134.0" />
+      <TextField fx:id="textF22" layoutX="233.0" layoutY="295.0" prefHeight="26.0" prefWidth="134.0" />
+      <TextField fx:id="textF23" layoutX="409.0" layoutY="295.0" prefHeight="26.0" prefWidth="134.0" />
     </children>
 </AnchorPane>

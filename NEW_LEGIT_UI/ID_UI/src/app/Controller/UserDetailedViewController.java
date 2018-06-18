@@ -42,5 +42,15 @@ public class UserDetailedViewController {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("../View/UserSessionsView.fxml"));
         Main.changeScene(actionEvent, loader, "UserSessionsView");
     }
+
+    public void showBmi(ActionEvent actionEvent) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("../View/UserBmiView.fxml"));
+        Main.changeScene(actionEvent, loader, "UserBmiView");
+    }
+
+    public void showAdd(ActionEvent actionEvent) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("../View/UserAddView.fxml"));
+        Main.changeScene(actionEvent, loader, "UserAddView");
+    }
 }
 
