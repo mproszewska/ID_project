@@ -17,7 +17,10 @@ funkcje użytkownika:
 
 	 heartrate_session_type(user_idd INTEGER, session_idd INTEGER)
 	  	RETURNS VARCHAR
-
+	
+	find_section(user_id INTEGER, "date" DATE, activity_id INTEGER)
+	
+	kcal(user_id INTEGER, start_time TIMESTAMP, end_time TIMESTAMP)
 
 ogólne:
 
