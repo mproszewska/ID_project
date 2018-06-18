@@ -158,7 +158,7 @@ LANGUAGE plpgsql;
 CREATE OR REPLACE FUNCTION min_heartrate(age NUMERIC)
 	RETURNS NUMERIC AS $$
 BEGIN
-RETURN max_heartrate(age)*0.3;
+RETURN max_heartrate(age)*0.4;
 END;
 $$
 LANGUAGE plpgsql;
