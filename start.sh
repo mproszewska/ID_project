@@ -20,6 +20,6 @@ psql "$1" < ./generated_data.sql #--quiet > /dev/null 2>&1
 echo "injecting last trigger..."
 psql "$1" < ./sql/heartrate_trigger.sql
 echo "removing trash..."
-# rm generated_data.sql > /dev/null 2>&1
+rm generated_data.sql > /dev/null 2>&1
 echo "finished!"
 
