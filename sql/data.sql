@@ -9,8 +9,8 @@ Dzwonisław	Krzakiel	m	1989-02-20
 Brzęczysław	Brząk	m	1990-12-03
 Brokułacy	Falafel	m	1967-03-20
 Mrokusław	Ptrzmiel	m	1988-04-20
-Miceksy	Szekeres	m	19-01-04
-Iwonicja	Bajtocka	k	1945-04-28
+Miceksy	Szekeres	m	1945-01-04
+Iwonicja	Bajtocka	k	1960-04-28
 Bieżysław	Popędny	m	1989-05-20
 Sławomir	Przytańczuk	m	1989-06-21
 Jędrula	Drań	m	1998-08-21

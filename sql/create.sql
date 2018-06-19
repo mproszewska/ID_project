@@ -962,7 +962,7 @@ IF  maxage IS NOT NULL AND NEW.end_time IS NOT NULL AND get_age(NEW.user_id,NEW.
 	THEN RAISE NOTICE 'WRONG MAXIMAL AGE'; 
 	RETURN NULL;END IF;
 
-IF  maxage IS NOT NULL AND NEW.end_time IS NULL
+IF  maxage IS NOT NULL AND NEW.end_time IS NOT NULL AND get_age(NEW.user_id,CURRENT_DATE)>maxage
 	THEN RAISE NOTICE 'WRONG MAXIMAL AGE'; 
 	RETURN NULL;END IF;
 
@@ -1132,6 +1132,7 @@ CASE
     SELECT user_id
       FROM injuries
       WHERE user_id=us.user_id AND end_time>=start_0 AND start_time<=end_0
+      LIMIT 1;
     ) IS NOT NULL
   THEN true
   ELSE false
@@ -1194,6 +1195,20 @@ CREATE OR REPLACE VIEW sections_info AS
   JOIN users u ON s.trainer_id = u.user_id
   JOIN activities a ON s.activity_id = a.activity_id
   ORDER BY s.section_id;
+
+
+----
+CREATE OR REPLACE VIEW too_old_memebers AS ;
+SELECT
+  u.name,
+  u.surname,
+  s.name,
+  get_age(u.user_id, current_date),
+  max_age
+FROM user_section us2
+JOIN users u ON us2.user_id = u.user_id
+JOIN sections s ON s.section_id = us2.section_id
+WHERE max_age > get_age(u.user_id, current_date);
 
 
 
