@@ -2,6 +2,7 @@ package app.Controller;
 
 import app.DB.QueriesMachine;
 import app.Main;
+import app.Model.Alerts;
 import app.Model.SelectContainer;
 import app.Model.User;
 import javafx.event.ActionEvent;
@@ -31,20 +32,25 @@ public class ViewOutController implements Initializable{
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         QueriesMachine qMachine = new QueriesMachine();
-        String query = "SELECT * FROM " + Main.getFunc() + ";";
+        String query = "";
+        try {
+            if (Main.getFunc().equals("section_ranking")) {
+                query = "SELECT * FROM " + Main.getFunc() + "(" + Main.getArgs()[0] +
+                        ",'" + Main.getArgs()[1] + "','" + Main.getArgs()[2] + "');";
+            } else {
+                query = "SELECT * FROM " + Main.getFunc() + ";";
+            }
+        } catch (Throwable e) {
+            //Alerts.alertCustom("Input Error.","Result:",e.getMessage());
+        }
+
         System.out.println(query);
         List<SelectContainer> container = null;
 
         try {
             container = qMachine.select(query, SelectContainer.class);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
+        } catch (Throwable e) {
+            Alerts.alertCustom("DB Error", "","Error");
         }
 
         for (SelectContainer tmp : container) {

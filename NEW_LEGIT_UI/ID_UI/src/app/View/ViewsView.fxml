@@ -2,6 +2,7 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Text?>
 
@@ -10,6 +11,9 @@
         <Button layoutX="59.0" layoutY="392.0" mnemonicParsing="false" onAction="#setReturnButton" text="RETURN" />
         <Button layoutX="476.0" layoutY="392.0" mnemonicParsing="false" onAction="#handleApply" text="APPLY" />
         <ChoiceBox fx:id="choiceBox" layoutX="194.0" layoutY="191.0" prefHeight="26.0" prefWidth="212.0" />
+        <TextField fx:id="textF11" layoutX="64.0" layoutY="295.0" prefHeight="26.0" prefWidth="134.0" />
+        <TextField fx:id="textF12" layoutX="233.0" layoutY="295.0" prefHeight="26.0" prefWidth="134.0" />
+        <TextField fx:id="textF13" layoutX="409.0" layoutY="295.0" prefHeight="26.0" prefWidth="134.0" />
         <Text layoutX="194.0" layoutY="163.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Choose view." textAlignment="CENTER" wrappingWidth="211.99999451637268" />
     </children>
 </AnchorPane>

@@ -601,7 +601,7 @@ CASE
 	WHEN (
 		SELECT user_id 
 			FROM injuries 
-			WHERE user_id=us.user_id AND end_time>=start_0 AND start_time<=end_0
+			WHERE user_id=us.user_id AND end_time::DATE>=start_0 AND start_time::DATE<=end_0
 		) IS NOT NULL 
 	THEN true 
 	ELSE false 
@@ -1132,7 +1132,7 @@ CASE
     SELECT user_id
       FROM injuries
       WHERE user_id=us.user_id AND end_time>=start_0 AND start_time<=end_0
-      LIMIT 1;
+      LIMIT 1
     ) IS NOT NULL
   THEN true
   ELSE false
@@ -1198,7 +1198,7 @@ CREATE OR REPLACE VIEW sections_info AS
 
 
 ----
-CREATE OR REPLACE VIEW too_old_memebers AS ;
+CREATE OR REPLACE VIEW too_old_memebers AS
 SELECT
   u.name,
   u.surname,

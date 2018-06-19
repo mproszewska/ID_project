@@ -10,7 +10,7 @@ public class Alerts {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Input Error");
         alert.setHeaderText("Results:");
-        alert.setContentText("INVALID DATA. TRY AGAIN.");
+        alert.setContentText("Invalid data. Try again.");
         alert.showAndWait();
     }
 

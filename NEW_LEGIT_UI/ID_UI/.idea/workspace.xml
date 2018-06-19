@@ -65,28 +65,34 @@
             <state />
           </provider>
           <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="360">
+              <caret line="18" column="105" lean-forward="true" selection-start-line="16" selection-start-column="8" selection-end-line="18" selection-end-column="105" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="UserAddView.fxml" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/app/View/UserAddView.fxml">
+          <provider editor-type-id="JavaFX-Scene-Builder">
+            <state />
+          </provider>
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="391">
+              <caret line="22" column="105" lean-forward="true" selection-start-line="20" selection-start-column="7" selection-end-line="22" selection-end-column="105" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ViewsView.fxml" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/app/View/ViewsView.fxml">
+          <provider editor-type-id="JavaFX-Scene-Builder">
+            <state />
+          </provider>
+          <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="300">
-              <caret line="15" column="160" lean-forward="false" selection-start-line="14" selection-start-column="7" selection-end-line="15" selection-end-column="160" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="DeleteViewController.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/app/Controller/DeleteViewController.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="540">
-              <caret line="51" column="26" lean-forward="false" selection-start-line="47" selection-start-column="3" selection-end-line="51" selection-end-column="26" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="UserBmiViewController.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/app/Controller/UserBmiViewController.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1640">
-              <caret line="97" column="37" lean-forward="false" selection-start-line="97" selection-start-column="37" selection-end-line="97" selection-end-column="37" />
+              <caret line="15" column="62" lean-forward="false" selection-start-line="15" selection-start-column="62" selection-end-line="15" selection-end-column="62" />
               <folding />
             </state>
           </provider>
@@ -95,8 +101,8 @@
       <file leaf-file-name="UserAddViewController.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/app/Controller/UserAddViewController.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3880">
-              <caret line="217" column="28" lean-forward="false" selection-start-line="217" selection-start-column="24" selection-end-line="217" selection-end-column="28" />
+            <state relative-caret-position="280">
+              <caret line="41" column="30" lean-forward="true" selection-start-line="34" selection-start-column="4" selection-end-line="41" selection-end-column="30" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -107,44 +113,58 @@
       <file leaf-file-name="AddViewController.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/app/Controller/AddViewController.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="380">
-              <caret line="122" column="31" lean-forward="false" selection-start-line="122" selection-start-column="31" selection-end-line="122" selection-end-column="31" />
+            <state relative-caret-position="422">
+              <caret line="73" column="88" lean-forward="false" selection-start-line="73" selection-start-column="12" selection-end-line="73" selection-end-column="88" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ViewsViewController.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="ViewsViewController.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/app/Controller/ViewsViewController.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="360">
-              <caret line="55" column="45" lean-forward="false" selection-start-line="55" selection-start-column="45" selection-end-line="55" selection-end-column="45" />
+              <caret line="55" column="51" lean-forward="false" selection-start-line="55" selection-start-column="51" selection-end-line="55" selection-end-column="51" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="UserBmiView.fxml" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/app/View/UserBmiView.fxml">
-          <provider editor-type-id="JavaFX-Scene-Builder">
-            <state />
-          </provider>
+      <file leaf-file-name="UserFunctionsViewController.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/app/Controller/UserFunctionsViewController.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="260">
-              <caret line="13" column="6" lean-forward="false" selection-start-line="13" selection-start-column="6" selection-end-line="13" selection-end-column="6" />
+            <state relative-caret-position="362">
+              <caret line="61" column="37" lean-forward="true" selection-start-line="61" selection-start-column="37" selection-end-line="61" selection-end-column="37" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="UserFunctionsView.fxml" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/app/View/UserFunctionsView.fxml">
-          <provider editor-type-id="JavaFX-Scene-Builder">
-            <state />
-          </provider>
+      <file leaf-file-name="ViewOutController.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/app/Controller/ViewOutController.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="380">
-              <caret line="19" column="160" lean-forward="false" selection-start-line="19" selection-start-column="160" selection-end-line="19" selection-end-column="160" />
+              <caret line="43" column="74" lean-forward="true" selection-start-line="43" selection-start-column="13" selection-end-line="43" selection-end-column="74" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Alerts.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/app/Model/Alerts.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="400">
+              <caret line="20" column="4" lean-forward="true" selection-start-line="20" selection-start-column="4" selection-end-line="20" selection-end-column="4" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="UserFunctionOutViewController.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/app/Controller/UserFunctionOutViewController.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="371">
+              <caret line="47" column="0" lean-forward="true" selection-start-line="47" selection-start-column="0" selection-end-line="47" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -179,7 +199,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/app/Controller/UserDetailedView.java" />
         <option value="$PROJECT_DIR$/src/app/View/UserInfoSimpleView.fxml" />
         <option value="$PROJECT_DIR$/src/app/Model/Activity.java" />
         <option value="$PROJECT_DIR$/src/app/Model/User.java" />
@@ -201,7 +220,6 @@
         <option value="$PROJECT_DIR$/src/app/Controller/UserInfoSimpleViewController.java" />
         <option value="$PROJECT_DIR$/src/app/View/LogInView.fxml" />
         <option value="$PROJECT_DIR$/src/app/Model/InsertionMachine.java" />
-        <option value="$PROJECT_DIR$/src/app/Model/Alerts.java" />
         <option value="$PROJECT_DIR$/src/app/Model/FXMLMachine.java" />
         <option value="$PROJECT_DIR$/src/app/Controller/UserDetailedViewController.java" />
         <option value="$PROJECT_DIR$/src/app/Controller/UserAddViewContoller.java" />
@@ -212,7 +230,6 @@
         <option value="$PROJECT_DIR$/src/app/View/FunctionsView.fxml" />
         <option value="$PROJECT_DIR$/src/app/View/ViewOut.fxml" />
         <option value="$PROJECT_DIR$/src/app/Controller/ViewOutViewController.java" />
-        <option value="$PROJECT_DIR$/src/app/Controller/ViewOutController.java" />
         <option value="$PROJECT_DIR$/src/app/DB/PostgreSQLJDBC.java" />
         <option value="$PROJECT_DIR$/src/app/Controller/LogInViewController.java" />
         <option value="$PROJECT_DIR$/src/app/View/AddView.fxml" />
@@ -229,6 +246,9 @@
         <option value="$PROJECT_DIR$/src/app/Controller/UserBmiViewController.java" />
         <option value="$PROJECT_DIR$/src/app/View/UserBmiView.fxml" />
         <option value="$PROJECT_DIR$/src/app/Controller/AddViewController.java" />
+        <option value="$PROJECT_DIR$/src/app/View/ViewsView.fxml" />
+        <option value="$PROJECT_DIR$/src/app/Model/Alerts.java" />
+        <option value="$PROJECT_DIR$/src/app/Controller/ViewOutController.java" />
         <option value="$PROJECT_DIR$/src/app/Controller/ViewsViewController.java" />
       </list>
     </option>
@@ -241,8 +261,8 @@
   </component>
   <component name="PhpWorkspaceProjectConfiguration" backward_compatibility_performed="true" />
   <component name="ProjectFrameBounds">
-    <option name="x" value="50" />
-    <option name="y" value="-11" />
+    <option name="x" value="-1870" />
+    <option name="y" value="1069" />
     <option name="width" value="1871" />
     <option name="height" value="1092" />
   </component>
@@ -918,12 +938,12 @@
       <workItem from="1529138978391" duration="6708000" />
       <workItem from="1529244329521" duration="875000" />
       <workItem from="1529344462304" duration="22468000" />
-      <workItem from="1529395069226" duration="177000" />
+      <workItem from="1529395069226" duration="4097000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="122210000" />
+    <option name="totallyTimeSpent" value="126130000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -935,7 +955,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="50" y="-11" width="1871" height="1092" extended-state="6" />
+    <frame x="-1870" y="1069" width="1871" height="1092" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -948,7 +968,7 @@
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32916668" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.31458333" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.31458333" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Properties" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32916668" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -1083,13 +1103,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/app/Controller/UserFunctionOutViewController.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="211">
-          <caret line="39" column="35" lean-forward="false" selection-start-line="34" selection-start-column="12" selection-end-line="39" selection-end-column="35" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/app/Controller/UserInfoViewController.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="177">
@@ -1220,16 +1233,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/app/Controller/ViewOutController.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="382">
-          <caret line="49" column="0" lean-forward="false" selection-start-line="49" selection-start-column="0" selection-end-line="49" selection-end-column="0" />
-          <folding>
-            <element signature="imports" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/app/DB/PostgreSQLJDBC.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="460">
@@ -1238,29 +1241,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/app/Model/Alerts.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="200">
-          <caret line="10" column="29" lean-forward="false" selection-start-line="10" selection-start-column="23" selection-end-line="10" selection-end-column="36" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/app/Controller/LogInViewController.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="222">
           <caret line="47" column="76" lean-forward="false" selection-start-line="47" selection-start-column="76" selection-end-line="47" selection-end-column="76" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/app/View/ViewsView.fxml">
-      <provider editor-type-id="JavaFX-Scene-Builder">
-        <state />
-      </provider>
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="12" column="165" lean-forward="false" selection-start-line="12" selection-start-column="165" selection-end-line="12" selection-end-column="165" />
           <folding />
         </state>
       </provider>
@@ -1297,17 +1281,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/app/View/UserAddView.fxml">
-      <provider editor-type-id="JavaFX-Scene-Builder">
-        <state />
-      </provider>
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="111">
-          <caret line="8" column="0" lean-forward="false" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="33" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/app/View/UserSessionsOutView.fxml">
       <provider editor-type-id="JavaFX-Scene-Builder">
         <state />
@@ -1337,17 +1310,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/app/View/AddView.fxml">
-      <provider editor-type-id="JavaFX-Scene-Builder">
-        <state />
-      </provider>
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="406">
-          <caret line="23" column="103" lean-forward="true" selection-start-line="18" selection-start-column="6" selection-end-line="23" selection-end-column="103" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/app/View/UserFunctionOutView.fxml">
       <provider editor-type-id="JavaFX-Scene-Builder">
         <state />
@@ -1359,22 +1321,13 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/app/View/DeleteView.fxml">
-      <provider editor-type-id="JavaFX-Scene-Builder">
-        <state />
-      </provider>
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="300">
-          <caret line="15" column="160" lean-forward="false" selection-start-line="14" selection-start-column="7" selection-end-line="15" selection-end-column="160" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/app/Controller/DeleteViewController.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="540">
           <caret line="51" column="26" lean-forward="false" selection-start-line="47" selection-start-column="3" selection-end-line="51" selection-end-column="26" />
-          <folding />
+          <folding>
+            <element signature="imports" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -1403,14 +1356,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/app/Controller/UserFunctionsViewController.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="444">
-          <caret line="89" column="47" lean-forward="false" selection-start-line="89" selection-start-column="47" selection-end-line="89" selection-end-column="47" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/app/Controller/UserFunctionChartViewController.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="142">
@@ -1427,16 +1372,6 @@
         <state relative-caret-position="380">
           <caret line="19" column="160" lean-forward="false" selection-start-line="19" selection-start-column="160" selection-end-line="19" selection-end-column="160" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/app/Controller/UserAddViewController.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3880">
-          <caret line="217" column="28" lean-forward="false" selection-start-line="217" selection-start-column="24" selection-end-line="217" selection-end-column="28" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1459,10 +1394,88 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/app/View/AddView.fxml">
+      <provider editor-type-id="JavaFX-Scene-Builder">
+        <state />
+      </provider>
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="406">
+          <caret line="23" column="103" lean-forward="true" selection-start-line="18" selection-start-column="6" selection-end-line="23" selection-end-column="103" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/app/View/DeleteView.fxml">
+      <provider editor-type-id="JavaFX-Scene-Builder">
+        <state />
+      </provider>
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="360">
+          <caret line="18" column="105" lean-forward="true" selection-start-line="16" selection-start-column="8" selection-end-line="18" selection-end-column="105" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/app/View/ViewsView.fxml">
+      <provider editor-type-id="JavaFX-Scene-Builder">
+        <state />
+      </provider>
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="300">
+          <caret line="15" column="62" lean-forward="false" selection-start-line="15" selection-start-column="62" selection-end-line="15" selection-end-column="62" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/app/View/UserAddView.fxml">
+      <provider editor-type-id="JavaFX-Scene-Builder">
+        <state />
+      </provider>
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="391">
+          <caret line="22" column="105" lean-forward="true" selection-start-line="20" selection-start-column="7" selection-end-line="22" selection-end-column="105" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/app/Controller/UserAddViewController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="280">
+          <caret line="41" column="30" lean-forward="true" selection-start-line="34" selection-start-column="4" selection-end-line="41" selection-end-column="30" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/app/Controller/AddViewController.java">
       <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="422">
+          <caret line="73" column="88" lean-forward="false" selection-start-line="73" selection-start-column="12" selection-end-line="73" selection-end-column="88" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/app/Model/Alerts.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="400">
+          <caret line="20" column="4" lean-forward="true" selection-start-line="20" selection-start-column="4" selection-end-line="20" selection-end-column="4" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/app/Controller/UserFunctionsViewController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="362">
+          <caret line="61" column="37" lean-forward="true" selection-start-line="61" selection-start-column="37" selection-end-line="61" selection-end-column="37" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/app/Controller/ViewOutController.java">
+      <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="380">
-          <caret line="122" column="31" lean-forward="false" selection-start-line="122" selection-start-column="31" selection-end-line="122" selection-end-column="31" />
+          <caret line="43" column="74" lean-forward="true" selection-start-line="43" selection-start-column="13" selection-end-line="43" selection-end-column="74" />
           <folding />
         </state>
       </provider>
@@ -1470,7 +1483,15 @@
     <entry file="file://$PROJECT_DIR$/src/app/Controller/ViewsViewController.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="360">
-          <caret line="55" column="45" lean-forward="false" selection-start-line="55" selection-start-column="45" selection-end-line="55" selection-end-column="45" />
+          <caret line="55" column="51" lean-forward="false" selection-start-line="55" selection-start-column="51" selection-end-line="55" selection-end-column="51" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/app/Controller/UserFunctionOutViewController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="371">
+          <caret line="47" column="0" lean-forward="true" selection-start-line="47" selection-start-column="0" selection-end-line="47" selection-end-column="0" />
           <folding />
         </state>
       </provider>
