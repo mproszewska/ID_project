@@ -75,23 +75,7 @@ public class UserAddViewController implements Initializable{
 
         if (choice == null) {
             Alerts.alertCustom("Input Error","Results:","Choose what you want to add.");
-        } else if (choice.equals("session") && FXMLMachine.checkContent(fields, 5)) {
-
-                /*qMachine.query(
-                        "INSERT INTO session()"
-                );*/
-        } else if (choice.equals("user") && FXMLMachine.checkContent(fields, 4)) {
-            success = true;
-            String query = "";
-
-            try {
-                qMachine.query(query);
-            } catch (Throwable e) {
-                success = false;
-                Alerts.alertCustom("Insertion Error", "Results: ", e.getMessage());
-            }
-            ///adding height / weight
-        } else if (choice.equals("activity") && FXMLMachine.checkContent(fields, 2)) {
+        } else if (choice.equals("session") && FXMLMachine.checkContent(fields, 0)) {
             success = true;
             String query = "";
             try {
@@ -100,9 +84,62 @@ public class UserAddViewController implements Initializable{
                 success = false;
                 Alerts.alertCustom("Insertion Error", "Results: ", e.getMessage());
             }
-        } else if (choice.equals("section") && FXMLMachine.checkContent(fields, 4)) {
+        } else if (choice.equals("injure") && FXMLMachine.checkContent(fields, 0)) {
+            success = true;
+            String query = "";
+            try {
+                qMachine.query(query);
+            } catch (Throwable e) {
+                success = false;
+                Alerts.alertCustom("Insertion Error", "Results: ", e.getMessage());
+            }
+        } else if (choice.equals("medication") && FXMLMachine.checkContent(fields, 0)) {
+            success = true;
 
+            List<SelectContainer> container = null;
+            String query = "SELECT medication_id FROM medications WHERE name LIKE '" + textF11.getText().toLowerCase() + "';";
+            System.out.println(query);
+            try {
+                container = qMachine.select(query, SelectContainer.class);
+            } catch (Throwable e) {
+                Alerts.alert();
+            }
 
+            String query2 = "INSERT INTO user_medication(user_id, medication_id, date, portion) VALUES (" +
+                    Main.getUser().getUserId() + ",'" +
+                    container.get(0).getAt(0) + "','" +
+                    textF12.getText() + "'," +
+                    textF13.getText() + ");";
+            try {
+                qMachine.query(query2);
+            } catch (Throwable e) {
+                success = false;
+                Alerts.alertCustom("Insertion Error", "Results: ", e.getMessage());
+            }
+        } else if (choice.equals("sleep") && FXMLMachine.checkContent(fields, 0)) {
+            success = true;
+            String query = "INSERT INTO sleep(user_id, start_time, end_time) VALUES (" +
+                    Main.getUser().getUserId() + ",'" +
+                    textF11.getText() + "','" +
+                    textF12.getText() + "');";
+            try {
+                qMachine.query(query);
+            } catch (Throwable e) {
+                success = false;
+                Alerts.alertCustom("Insertion Error", "Results: ", e.getMessage());
+            }
+        } else if (choice.equals("height_weight") && FXMLMachine.checkContent(fields, 0)) {
+            success = true;
+            String query = "INSERT INTO height_weight(user_id, height, weight, date) VALUES (" +
+                    Main.getUser().getUserId() + "," +
+                    textF11.getText() + ","+
+                    textF12.getText() + ", current_date);";
+            try {
+                qMachine.query(query);
+            } catch (Throwable e) {
+                success = false;
+                Alerts.alertCustom("Insertion Error", "Results: ", e.getMessage());
+            }
         }
 
         if(success) {
@@ -154,6 +191,32 @@ public class UserAddViewController implements Initializable{
                     text.setText("(height, weight)");
                     String[] id = {"height", "weight"};
                     setInfo.updateFields(fields, Arrays.asList(id));
+
+                    QueriesMachine qMachine = new QueriesMachine();
+                    List<SelectContainer> container = null;
+                    try {
+                        container = qMachine.select
+                                ("SELECT * FROM users " +
+                                                "LEFT JOIN height_weight ON users.user_id = height_weight.user_id " +
+                                                "WHERE name LIKE '" + Main.getUser().getName() + "' and surname like '" + Main.getUser().getSurname() + "'"
+                                        , SelectContainer.class);
+                    } catch (Throwable e) {
+
+                    }
+
+                    List<SelectContainer> container2 = null;
+                    try {
+                        if(!container.isEmpty()) {
+                            container2 = qMachine.select
+                                    ("SELECT * FROM get_heigth(" + container.get(0).getAt(0).toString() + ",current_date);"
+                                            , SelectContainer.class);
+                        }
+                    } catch (Throwable e) {
+
+                    }
+
+                    if(!container2.isEmpty())
+                        textF11.setText(container2.get(0).getAt(0).toString());
                     textArea.setPromptText("");
                     textArea.setDisable(true);
                 }

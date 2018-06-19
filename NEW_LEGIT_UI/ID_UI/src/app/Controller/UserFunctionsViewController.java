@@ -2,6 +2,7 @@ package app.Controller;
 
 import app.DB.QueriesMachine;
 import app.Main;
+import app.Model.FXMLMachine;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -10,10 +11,14 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.ResourceBundle;
 
 /**
@@ -24,7 +29,16 @@ public class UserFunctionsViewController implements Initializable {
     private ChoiceBox choiceBox;
 
     @FXML
-    private TextArea textArea;
+    private TextField textF11;
+
+    @FXML
+    private TextField textF12;
+
+    @FXML
+    private TextField textF13;
+
+    @FXML
+    private TextField textF21;
 
     @FXML
     private Text text;
@@ -41,24 +55,19 @@ public class UserFunctionsViewController implements Initializable {
 
     @FXML
     private void handleApply(ActionEvent actionEvent) throws IOException {
-        String line = textArea.getText();
-        String [] in = line.split(",");
-        String [] legit = new String[in.length];
-        int it = 0;
-        for(String x : in) {
-            legit[it] = x.replaceAll("\\s+","");
-            it++;
-        }
 
         if(!choice.equals("")) {
-            Main.changeArgs(legit);
             if (choice.equals("medication per day")) {
+                String[] tmp = {textF11.getText().toString()};
+                Main.changeArgs(tmp);
                 Main.changeFunc("get_my_med");
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("../View/UserFunctionOutView.fxml"));
                 Main.changeScene(actionEvent, loader, "UserFunctionOutView");
             }
 
             if (choice.equals("heartrate per day")) {
+                String[] tmp = {textF11.getText().toString()};
+                Main.changeArgs(tmp);
                 Main.changeFunc("heartrate");
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("../View/UserFunctionChartView.fxml"));
                 Main.changeScene(actionEvent, loader, "UserFunctionChartView");
@@ -69,6 +78,9 @@ public class UserFunctionsViewController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         choiceBox.getItems().addAll("medication per day", "heartrate per day");
+        List<TextField> fields = new ArrayList<>();
+        TextField[] tmp = {textF11, textF12, textF13, textF21};
+        fields.addAll(Arrays.asList(tmp));
 
         choiceBox.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
             @Override
@@ -77,8 +89,16 @@ public class UserFunctionsViewController implements Initializable {
 
                 textinfo.setText("Arguments:");
 
-                if(choice.equals("medication per day") || choice.equals("heartrate per day")) {
+                FXMLMachine setInfo = new FXMLMachine();
+                textinfo.setText("Information needed: ");
+                if(choice.equals("medication per day")) {
                     text.setText("(date)");
+                    String[] id = {"date"};
+                    setInfo.updateFields(fields, Arrays.asList(id));
+                } else if(choice.equals("heartrate per day")) {
+                    text.setText("(date)");
+                    String[] id = {"date"};
+                    setInfo.updateFields(fields, Arrays.asList(id));
                 }
             }
         });

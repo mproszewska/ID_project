@@ -16,8 +16,11 @@
         <Button layoutX="476.0" layoutY="392.0" mnemonicParsing="false" onAction="#handleApply" text="APPLY" />
         <ChoiceBox fx:id="choiceBox" layoutX="194.0" layoutY="91.0" prefHeight="26.0" prefWidth="212.0" />
         <Text layoutX="194.0" layoutY="67.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Choose function." textAlignment="CENTER" wrappingWidth="211.99999451637268" />
-        <TextArea fx:id="textArea" layoutX="95.0" layoutY="233.0" prefHeight="106.0" prefWidth="410.0" />
         <Text fx:id="text" layoutX="95.0" layoutY="192.0" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER" wrappingWidth="410.0000023841858" />
         <Text fx:id="textinfo" layoutX="95.0" layoutY="160.0" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER" wrappingWidth="410.0000023841858" />
+        <TextField fx:id="textF11" layoutX="127.0" layoutY="245.0" prefHeight="26.0" prefWidth="134.0" />
+        <TextField fx:id="textF12" layoutX="339.0" layoutY="245.0" prefHeight="26.0" prefWidth="134.0" />
+        <TextField fx:id="textF13" layoutX="339.0" layoutY="295.0" prefHeight="26.0" prefWidth="134.0" />
+        <TextField fx:id="textF21" layoutX="127.0" layoutY="295.0" prefHeight="26.0" prefWidth="134.0" />
     </children>
 </AnchorPane>

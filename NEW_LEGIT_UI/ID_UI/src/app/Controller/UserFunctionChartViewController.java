@@ -59,6 +59,7 @@ public class UserFunctionChartViewController implements Initializable{
                 int foo = Integer.parseInt(container.get(i).getAt(0).toString());
                 dataSeries1.getData().add(new XYChart.Data<>(i,foo));
             }
+
             lineChart.getData().add(dataSeries1);
             lineChart.setCreateSymbols(false);
         }

@@ -110,13 +110,19 @@ public class AddViewController implements Initializable {
             }
 
             success = true;
-            String query2 = "INSERT INTO sections(activity_id, trainer_id, name, city, min_members, max_members) VALUES (" +
-                    container.get(0).getAt(0) + "," +
-                    textF12.getText() + ",'" +
-                    fMachine.format(textF13.getText()) + "','" +
-                    fMachine.format(textF21.getText()) + "'," +
-                    textF22.getText() + "," +
-                    textF23.getText() + ");";
+            String query2 = "";
+            try {
+                query2 = "INSERT INTO sections(activity_id, trainer_id, name, city, min_members, max_members) VALUES (" +
+                        container.get(0).getAt(0) + "," +
+                        textF12.getText() + ",'" +
+                        fMachine.format(textF13.getText()) + "','" +
+                        fMachine.format(textF21.getText()) + "'," +
+                        textF22.getText() + "," +
+                        textF23.getText() + ");";
+            }catch (Throwable e) {
+                success = false;
+                Alerts.alertCustom("Input error." ,"Result:", e.getMessage());
+            }
 
             try {
                 qMachine.query(query2);

@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ListView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Text?>
 
 <AnchorPane prefHeight="450.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.Controller.UserSessionsOutViewContorller">
 
     <children>
-        <ListView fx:id="listView" prefHeight="383.0" prefWidth="600.0" />
         <Button layoutX="53.0" layoutY="399.0" mnemonicParsing="false" onAction="#setReturnButton" text="RETURN" />
+      <Text fx:id="tx1" layoutX="200.0" layoutY="254.0" strokeType="OUTSIDE" strokeWidth="0.0" text="" wrappingWidth="200.00000596046448" textAlignment="CENTER" />
+      <Text fx:id="tx2" layoutX="200.0" layoutY="193.0" strokeType="OUTSIDE" strokeWidth="0.0" text="" wrappingWidth="200.00000596046448" textAlignment="CENTER" />
     </children>
 </AnchorPane>

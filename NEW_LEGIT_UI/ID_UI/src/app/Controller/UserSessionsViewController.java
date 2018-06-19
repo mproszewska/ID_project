@@ -43,6 +43,9 @@ public class UserSessionsViewController implements Initializable{
             Main.setContainer(selectContainer);
             if(choice.equals("kcal"))
                 Main.changeFunc("kcal_during_session");
+            else if(choice.equals("session type"))
+                Main.changeFunc("heartrate_session_type");
+
             FXMLLoader loader = new FXMLLoader(getClass().getResource("../View/UserSessionsOutView.fxml"));
             Main.changeScene(actionEvent,loader,"UserSessionsOutView");
         }
@@ -58,15 +61,10 @@ public class UserSessionsViewController implements Initializable{
                     "LEFT JOIN sessions ON user_session.session_id = sessions.session_id " +
                     "LEFT JOIN activities ON sessions.activity_id = activities.activity_id;",
                     SelectContainer.class);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
+        } catch (Throwable e) {
+
         }
+
         for(SelectContainer s : sessions){
             listView.getItems().add(s);
         }
@@ -79,7 +77,7 @@ public class UserSessionsViewController implements Initializable{
             }
         });
 
-        choiceBox.getItems().addAll("kcal");
+        choiceBox.getItems().addAll("kcal", "session type");
 
         choiceBox.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
             @Override
