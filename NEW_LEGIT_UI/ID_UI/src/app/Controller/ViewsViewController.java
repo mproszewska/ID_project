@@ -53,7 +53,7 @@ public class ViewsViewController implements Initializable {
                 } else if (choice.equals("best sleep time")) {
                     Main.changeFunc("best_sleep_time");
                 } else if (choice.equals("section info")) {
-                    Main.changeFunc("section_info");
+                    Main.changeFunc("sections_info");
                 } else if (choice.equals("section ranking")) {
                     Main.changeFunc("section_ranking");
                 }

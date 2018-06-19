@@ -1131,7 +1131,7 @@ CASE
   WHEN (
     SELECT user_id
       FROM injuries
-      WHERE user_id=us.user_id AND "date"+duration>=start_0 AND "date"<=end_0
+      WHERE user_id=us.user_id AND end_time>=start_0 AND start_time<=end_0
     ) IS NOT NULL
   THEN true
   ELSE false
