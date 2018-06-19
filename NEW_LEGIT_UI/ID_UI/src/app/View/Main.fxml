@@ -18,7 +18,7 @@
     <children>
         <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#showLogIn" prefHeight="150.0" prefWidth="300.0" text="log in to DB" />
         <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#showUsers" prefHeight="150.0" prefWidth="300.0" text="users" GridPane.columnIndex="1" />
-        <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#showFunctions" prefHeight="150.0" prefWidth="300.0" text="functions" GridPane.rowIndex="1" />
+        <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#showFunctions" prefHeight="150.0" prefWidth="300.0" text="views" GridPane.rowIndex="1" />
         <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#showUserInfo" prefHeight="150.0" prefWidth="300.0" text="user info" GridPane.columnIndex="1" GridPane.rowIndex="1" />
         <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#showAdd" prefHeight="150.0" prefWidth="300.0" text="add" GridPane.rowIndex="2" />
         <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#showDelete" prefHeight="150.0" prefWidth="300.0" text="delete" GridPane.columnIndex="1" GridPane.rowIndex="2" />

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.text.Text?>
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="app.Controller.UserAddViewController"
+            prefHeight="450.0" prefWidth="600.0">
+    <children>
+        <Button layoutX="59.0" layoutY="392.0" mnemonicParsing="false" onAction="#setReturnButton" text="RETURN" />
+        <Button layoutX="476.0" layoutY="392.0" mnemonicParsing="false" onAction="#handleApply" text="APPLY" />
+        <ChoiceBox fx:id="choiceBox" layoutX="194.0" layoutY="91.0" prefHeight="26.0" prefWidth="212.0" />
+        <Text layoutX="194.0" layoutY="67.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Choose what you want to add." textAlignment="CENTER" wrappingWidth="211.99999451637268" />
+        <Text fx:id="text" layoutX="95.0" layoutY="192.0" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER" wrappingWidth="410.0000023841858" />
+        <Text fx:id="textinfo" layoutX="95.0" layoutY="160.0" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER" wrappingWidth="410.0000023841858" />
+        <TextField fx:id="textF11" layoutX="64.0" layoutY="245.0" prefHeight="26.0" prefWidth="134.0" />
+        <TextField fx:id="textF12" layoutX="233.0" layoutY="245.0" prefHeight="26.0" prefWidth="134.0" />
+        <TextField fx:id="textF13" layoutX="409.0" layoutY="245.0" prefHeight="26.0" prefWidth="134.0" />
+        <TextField fx:id="textF21" layoutX="64.0" layoutY="295.0" prefHeight="26.0" prefWidth="134.0" />
+        <TextField fx:id="textF22" layoutX="233.0" layoutY="295.0" prefHeight="26.0" prefWidth="134.0" />
+        <TextField fx:id="textF23" layoutX="409.0" layoutY="295.0" prefHeight="26.0" prefWidth="134.0" />
+        <TextArea fx:id="textArea" layoutX="163.0" layoutY="350.0" prefHeight="55.0" prefWidth="282.0" />
+    </children>
+</AnchorPane>
